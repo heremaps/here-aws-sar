@@ -1,0 +1,13 @@
+{
+  "name": "mapimage",
+  "version": "0.1.0",
+  "description": "AWS Lambda proxy for HERE Maps API MapImage",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heremaps/here-aws-sar.git"
+  },
+  "dependencies": {
+    "request": "^2.83.0"
+  }
+}

@@ -1,0 +1,32 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+
+Parameters:
+  HereAppId:
+    Type: String
+    Description: HERE Maps API App ID (https://developer.here.com/faqs#access-control)
+  HereAppCode:
+    Type: String
+    Description: HERE Maps API App Code (https://developer.here.com/faqs#access-control)
+
+Resources:
+  WeatherFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Runtime: nodejs6.10
+      Handler: weather.weatherGET
+      Description: 'Give insights into real-time weather forecasts, alerts, and astronomical info for any location.'
+      Environment:
+        Variables:
+          HERE_APP_ID: !Ref HereAppId
+          HERE_APP_CODE: !Ref HereAppCode
+      Events:
+        GET:
+          Type: Api
+          Properties:
+            Path: /weather
+            Method: get
+Outputs:
+  HereApiURL:
+    Description: "AWS API Gateway URL for Here.com Weather API (CIT)."
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Stage/"

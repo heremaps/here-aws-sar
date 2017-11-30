@@ -1,0 +1,77 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+  HereAppId:
+    Type: String
+    Description: Here WeGo App ID
+  HereAppCode:
+    Type: String
+    Description: Here WeGo App Code
+
+Resources:
+  HereApiMapImageGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+        StageName: Prod
+        DefinitionBody:
+            swagger: "2.0"
+            info:
+              title:
+                Ref: AWS::StackName
+            paths:
+              "/mapimage":
+                get:
+                  produces:
+                  - "application/json"
+                  responses:
+                    "200":
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                    requestTemplates:
+                      application/json: "#set($allParams = $input.params())\n{\n  \"body-json\"\
+                        \ : $input.json('$'),\n  \"params\" : {\n    #foreach($type in $allParams.keySet())\n\
+                        \      #set($params = $allParams.get($type))\n      \"$type\" : {\n  \
+                        \      #foreach($paramName in $params.keySet())\n          \"$paramName\"\
+                        \ : \"$util.escapeJavaScript($params.get($paramName))\"\n          #if($foreach.hasNext),#end\n\
+                        \        #end\n      }\n    #if($foreach.hasNext),#end\n    #end\n  }\n\
+                        }"
+                    uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MapImageFunction.Arn}/invocations"
+                    passthroughBehavior: "never"
+                    httpMethod: "POST"
+                    contentHandling: "CONVERT_TO_TEXT"
+                    type: "aws"
+            definitions:
+              Empty:
+                type: "object"
+                title: "Empty Schema"
+            x-amazon-apigateway-binary-media-types:
+            - "image/jpeg"
+  MapImageFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: nodejs6.10
+      Handler: mapimage.mapimageGET
+      Description: 'Get access to pre-rendered map images already optimized for desktop and mobile devices.'
+      Environment:
+        Variables:
+          HERE_APP_ID: !Ref HereAppId
+          HERE_APP_CODE: !Ref HereAppCode
+      MemorySize: 512
+      Events:
+        GET:
+          Type: Api
+          Properties:
+            Path: /mapimage
+            Method: GET
+            RestApiId:
+                Ref: HereApiMapImageGateway
+Outputs:
+  HereApiURL:
+    Description: "AWS API Gateway URL for Here.com Map Image API (CIT)."
+    Value: !Sub "https://${HereApiMapImageGateway}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
