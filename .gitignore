@@ -58,3 +58,6 @@ typings/
 .env
 
 *-packaged.yml
+.vs
+bin
+obj
