@@ -4,10 +4,10 @@ Transform: 'AWS::Serverless-2016-10-31'
 Parameters:
   HereAppId:
     Type: String
-    Description: HERE Maps API App ID (https://developer.here.com/faqs#access-control)
+    Description: HERE Technologies API App ID
   HereAppCode:
     Type: String
-    Description: HERE Maps API App Code (https://developer.here.com/faqs#access-control)
+    Description: HERE Technologies API App Code
 
 Resources:
   RoutingFunction:

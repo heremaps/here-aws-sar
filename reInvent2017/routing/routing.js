@@ -52,5 +52,12 @@ exports.routingGET = (event, context, callback) => {
   const url = `${HERE_API}?app_id=${process.env.HERE_APP_ID}&app_code=${process.env.HERE_APP_CODE}` + args;
   console.log(`>>> url: ${url}`);
 
-  queryApi(url, (body) => { callback(null, { body: body }); });
+  queryApi(url, (body) => {
+    let response = {
+      statusCode: 200,
+      // headers: { 'Access-Control-Allow-Origin': '*' },
+      body: body
+    };
+    callback(null, response);
+  });
 }
