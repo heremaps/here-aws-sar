@@ -51,5 +51,11 @@ exports.geocodeGET = (event, context, callback) => {
   const url = `${HERE_API_URL}?app_id=${HERE_API_APP_ID}&app_code=${HERE_API_APP_CODE}&searchtext=${searchtext}`;
   console.log(`>>> url: ${url}`);
 
-  queryApi(url, body => { callback(null, { body: body }); });
+  queryApi(url, (body) => {
+    callback(null, {
+      statusCode: 200,
+      // headers: { 'Access-Control-Allow-Origin': '*' },
+      body: body
+    });
+  });
 }

@@ -26,31 +26,38 @@ const HERE_API = 'https://route.cit.api.here.com/routing/7.2/calculateroute.json
 const https = require("https");
 
 function queryApi(url, callback) {
-  https.get(url, res => {
-    res.setEncoding("utf8");
-    let body = "";
-    res.on("data", data => {
-      body += data;
+    https.get(url, res => {
+        res.setEncoding("utf8");
+        let body = "";
+        res.on("data", data => {
+            body += data;
+        });
+        res.on("end", () => {
+            callback(body);
+        });
     });
-    res.on("end", () => {
-      callback(body);
-    });
-  });
 }
 
 exports.routingGET = (event, context, callback) => {
-  console.log(`>>> process.env.HERE_APP_ID: ${process.env.HERE_APP_ID}`);
-  console.log(`>>> process.env.HERE_APP_CODE: ${process.env.HERE_APP_CODE}`);
+    console.log(`>>> process.env.HERE_APP_ID: ${process.env.HERE_APP_ID}`);
+    console.log(`>>> process.env.HERE_APP_CODE: ${process.env.HERE_APP_CODE}`);
 
-  let args = ""
-  for (let qsp in event.queryStringParameters) {
-    let qsa = "&" + qsp + "=" + event['queryStringParameters'][qsp]
-    console.log(`>>> QueryStringArg: ${qsa}`)
-    args += qsa
-  }
+    let args = ""
+    for (let qsp in event.queryStringParameters) {
+        let qsa = "&" + qsp + "=" + event['queryStringParameters'][qsp]
+        console.log(`>>> QueryStringArg: ${qsa}`)
+        args += qsa
+    }
 
-  const url = `${HERE_API}?app_id=${process.env.HERE_APP_ID}&app_code=${process.env.HERE_APP_CODE}` + args;
-  console.log(`>>> url: ${url}`);
+    const url = `${HERE_API}?app_id=${process.env.HERE_APP_ID}&app_code=${process.env.HERE_APP_CODE}` + args;
+    console.log(`>>> url: ${url}`);
 
-  queryApi(url, (body) => { callback(null, { body: body }); });
+    queryApi(url, (body) => {
+        let response = {
+            statusCode: 200,
+            // headers: { 'Access-Control-Allow-Origin': '*' },
+            body: body
+        };
+        callback(null, response);
+    });
 }

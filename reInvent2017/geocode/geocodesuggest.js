@@ -28,28 +28,34 @@ const HERE_API_APP_CODE = process.env.HERE_APP_CODE;
 const https = require("https");
 
 function queryApi(url, callback) {
-  https.get(url, res => {
-    res.setEncoding("utf8");
-    let body = "";
-    res.on("data", data => {
-      body += data;
+    https.get(url, res => {
+        res.setEncoding("utf8");
+        let body = "";
+        res.on("data", data => {
+            body += data;
+        });
+        res.on("end", () => {
+            callback(body);
+        });
     });
-    res.on("end", () => {
-      callback(body);
-    });
-  });
 }
 
 exports.geocodesuggestGET = (event, context, callback) => {
-  console.log(`>>> HERE_API: ${HERE_API_URL}`);
-  console.log(`>>> HERE_API_APP_ID: ${HERE_API_APP_ID}`);
-  console.log(`>>> HERE_API_APP_CODE: ${HERE_API_APP_CODE}`);
+    console.log(`>>> HERE_API: ${HERE_API_URL}`);
+    console.log(`>>> HERE_API_APP_ID: ${HERE_API_APP_ID}`);
+    console.log(`>>> HERE_API_APP_CODE: ${HERE_API_APP_CODE}`);
 
-  const query = event.pathParameters.query;
-  console.log(`>>> query: ${query}`);
+    const query = event.pathParameters.query;
+    console.log(`>>> query: ${query}`);
 
-  const url = `${HERE_API_URL}?app_id=${HERE_API_APP_ID}&app_code=${HERE_API_APP_CODE}&query=${query}`;
-  console.log(`>>> url: ${url}`);
+    const url = `${HERE_API_URL}?app_id=${HERE_API_APP_ID}&app_code=${HERE_API_APP_CODE}&query=${query}`;
+    console.log(`>>> url: ${url}`);
 
-  queryApi(url, (body) => { callback(null, { body: body }); });
+    queryApi(url, (body) => {
+        callback(null, {
+            statusCode: 200,
+            // headers: { 'Access-Control-Allow-Origin': '*' },
+            body: body
+        });
+    });
 }
