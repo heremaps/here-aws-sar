@@ -1,0 +1,32 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+
+Parameters:
+  HereAppId:
+    Type: String
+    Description: HERE Location Services API App ID (https://saas.awsmarketplace.here.com/faq#api-access)
+  HereAppCode:
+    Type: String
+    Description: HERE Location Services API App Code (https://saas.awsmarketplace.here.com/faq#api-access)
+
+Resources:
+  TollCostFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Runtime: nodejs6.10
+      Handler: tollcost.tollcostGET
+      Description: 'A Lambda function that Calculate the toll costs for any HERE route while taking into account various vehicle profiles, or get the cost-optimized route based on toll and vehicle costs.'
+      Environment:
+        Variables:
+          HERE_APP_ID: !Ref HereAppId
+          HERE_APP_CODE: !Ref HereAppCode
+      Events:
+        GET:
+          Type: Api
+          Properties:
+            Path: /tollcost
+            Method: get
+Outputs:
+  HereApiURL:
+    Description: "AWS API Gateway URL for HERE Toll Cost API."
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"

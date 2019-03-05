@@ -1,8 +1,8 @@
 # AWS SAM for HERE Maps APIs
 ## Introduction
-This project provides [AWS Lambdas](https://aws.amazon.com/lambda/) as __proxies__ for several of the [HERE Maps APIs](https://developer.here.com/). These AWS Lambdas are packaged as per the [AWS Serverless Application Model](https://aws.amazon.com/about-aws/whats-new/2016/11/introducing-the-aws-serverless-application-model/).
+This project provides [AWS Lambdas](https://aws.amazon.com/lambda/) as __proxies__ for several of the [HERE Location Services APIs](http://saas.awsmarketplace.here.com/rest-api). These AWS Lambdas are packaged as per the [AWS Serverless Application Model](https://aws.amazon.com/about-aws/whats-new/2016/11/introducing-the-aws-serverless-application-model/).
 
-“AWS SAM is natively supported by AWS CloudFormation and defines simplified syntax for expressing serverless resources. The specification currently covers APIs, Lambda functions and Amazon DynamoDB tables.”
+ï¿½AWS SAM is natively supported by AWS CloudFormation and defines simplified syntax for expressing serverless resources. The specification currently covers APIs, Lambda functions and Amazon DynamoDB tables.ï¿½
 
 ### Benefits
 
@@ -88,7 +88,7 @@ The below list of HERE Maps APIs each has one Lambda as a proxy.
 
 An example of an HTTP GET request to HERE.com:
 
-`https://geocoder.cit.api.here.com/6.2/geocode.json?app_id=<appID>&app_code=<appCode>&searchtext={searchtext}`
+`https://geocoder.api.here.com/6.2/geocode.json?app_id=<appID>&app_code=<appCode>&searchtext={searchtext}`
 
 To call the Lambda proxy instead, replace the original URL with the API Gateway URL and change the Query String Parameters as follows:
 
@@ -100,7 +100,7 @@ An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
 An example of an HTTP GET request to HERE.com:
 
-`https://autocomplete.geocoder.cit.api.here.com/6.2/suggest.json?app_id=<appID>&app_code=<appCode>&query={query}`
+`https://autocomplete.geocoder.api.here.com/6.2/suggest.json?app_id=<appID>&app_code=<appCode>&query={query}`
 
 To call the Lambda proxy instead, replace the original URL with the API Gateway URL and change the Query String Parameters as follows:
 
