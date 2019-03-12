@@ -16,7 +16,7 @@ Resources:
       Runtime: nodejs6.10
       Handler: routing.routingGET
       Description: 'A lambda function to provide precise instructions to a destination using various transport modes (e.g., car, truck, public transit, bicycle) and leveraging different algorithms (e.g., matrix, isoline routing).'
-        Environment:
+      Environment:
         Variables:
           HERE_APP_ID: !Ref HereAppId
           HERE_APP_CODE: !Ref HereAppCode
