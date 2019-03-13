@@ -9,7 +9,7 @@ This project provides [AWS Lambdas](https://aws.amazon.com/lambda/) as __proxies
 The AWS API Gateway supports configuring both Cache and Throttling, and the lambdas are open source: we welcome pull requests with circuit breakers, graceful error handling, etc.!
 
 ## Requirements
-To successfully call the HERE Maps APIs through the proxies in this project you need to obtain HERE API credentials. Multiple plans are available: https://developer.here.com/plans.
+To successfully call the HERE Maps APIs through the proxies in this project you need to obtain HERE API credentials. Multiple plans are available: https://aws.amazon.com/marketplace/pp/B07JPLG9SR/?ref=_ptnr_aws_sar_github#pricing-information.
 
 ## List of APIs with AWS Lambda Proxies
 * [geocode](https://developer.here.com/documentation/geocoder/topics/introduction.html) & [geocode autocomplete](https://developer.here.com/documentation/geocoder-autocomplete/topics/introduction.html)
@@ -25,7 +25,7 @@ To successfully call the HERE Maps APIs through the proxies in this project you 
 ## Setup
 ### Step 1: Register for an API Key
 
-Visit the [here.com Plans overview](https://developer.here.com/plans), and review the [Access Control FAQ](https://developer.here.com/faqs#access-control).
+Visit the [HERE Location Services on AWS Marketplace](https://aws.amazon.com/marketplace/pp/B07JPLG9SR/?ref=_ptnr_aws_sar_github), and review the [Access Control FAQ](https://saas.awsmarketplace.here.com/faq#api-access).
 
 ### Step 2: Register an AWS Account
 
@@ -112,7 +112,7 @@ An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
 An example of an HTTP GET request to HERE.com:
 
-`https://image.maps.cit.api.here.com/mia/1.6/mapview?app_id=<appID>&app_code=<appCode>&lat=63.529722&lon=-19.513889`
+`https://image.maps.api.here.com/mia/1.6/mapview?app_id=<appID>&app_code=<appCode>&lat=63.529722&lon=-19.513889`
 
 To call the Lambda proxy instead, replace the original URL with the API Gateway URL and change the Query String Parameters as follows:
 
@@ -124,7 +124,7 @@ An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
 An example of an HTTP GET request to HERE.com:
 
-`https://places.cit.api.here.com/places/v1/autosuggest?app_id=<appID>&app_code=<appCode>&at=40.74917,-73.98529&q=chrysler`
+`https://places.api.here.com/places/v1/autosuggest?app_id=<appID>&app_code=<appCode>&at=40.74917,-73.98529&q=chrysler`
 
 To call the Lambda proxy instead, replace the original URL with the API Gateway URL and change the Query String Parameters as follows:
 
@@ -138,7 +138,7 @@ Note: this API call requires an HTTP **POST**. See the Test project for an examp
 
 An example of an HTTP POST to HERE.com:
 
-`https://pos.cit.api.here.com/positioning/v1/locate?app_id=<appID>&app_code=<appCode>`
+`https://pos.api.here.com/positioning/v1/locate?app_id=<appID>&app_code=<appCode>`
 
 An example of an HTTP POST to the equivalent AWS Lambda Proxy:
 
@@ -148,7 +148,7 @@ An example of an HTTP POST to the equivalent AWS Lambda Proxy:
 
 An example of an HTTP GET request to HERE.com:
 
-`https://route.cit.api.here.com/routing/7.2/calculateroute.json?app_id=<appID>&app_code=<appCode>&waypoint0=geo!52.5%2c13.4&waypoint1=geo!52.5%2c13.45&mode=fastest%3bcar%3btraffic:disabled%3b`
+`https://route.api.here.com/routing/7.2/calculateroute.json?app_id=<appID>&app_code=<appCode>&waypoint0=geo!52.5%2c13.4&waypoint1=geo!52.5%2c13.45&mode=fastest%3bcar%3btraffic:disabled%3b`
 
 To call the Lambda proxy instead, replace the original URL with the API Gateway URL and change the Query String Parameters as follows:
 
@@ -160,7 +160,7 @@ An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
 An example of an HTTP GET request to HERE.com:
 
-`https://wse.cit.api.here.com/2/findsequence.json?app_id=<appID>&app_code=<appCode>&start=WiesbadenCentralStation%3b50.0715%2c8.2434&destination1=FranfurtCentralStation%3b50.1073%2c8.6647&destination2=DarmstadtCentralStation%3b49.8728%2c8.6326&destination3=FrankfurtAirport%3b50.0505%2c8.5698&destination4=HanauCentralStation%3b50.1218%2c8.9298&end=MainzCentralStation%3b50.0021%2c8.259&improveFor=time&departure=2014-12-09T09:30:00%2b01:00&mode=fastest%3bcar%3btraffic:disabled%3b`
+`https://wse.api.here.com/2/findsequence.json?app_id=<appID>&app_code=<appCode>&start=WiesbadenCentralStation%3b50.0715%2c8.2434&destination1=FranfurtCentralStation%3b50.1073%2c8.6647&destination2=DarmstadtCentralStation%3b49.8728%2c8.6326&destination3=FrankfurtAirport%3b50.0505%2c8.5698&destination4=HanauCentralStation%3b50.1218%2c8.9298&end=MainzCentralStation%3b50.0021%2c8.259&improveFor=time&departure=2014-12-09T09:30:00%2b01:00&mode=fastest%3bcar%3btraffic:disabled%3b`
 
 To call the Lambda proxy instead, replace the original URL with the API Gateway URL and change the Query String Parameters as follows:
 
@@ -172,7 +172,7 @@ An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
 An example of an HTTP GET request to HERE.com:
 
-`https://tce.cit.api.here.com/2/calculateroute.json?app_id=<appID>&app_code=<appCode>&waypoint0=49.33729606975952%2c0.5986232869327068&waypoint1=49.493527937780975%2c0.10129541603788539&mode=fastest%3bcar%26cost_optimize%3d1`
+`https://tce.api.here.com/2/calculateroute.json?app_id=<appID>&app_code=<appCode>&waypoint0=49.33729606975952%2c0.5986232869327068&waypoint1=49.493527937780975%2c0.10129541603788539&mode=fastest%3bcar%26cost_optimize%3d1`
 
 To call the Lambda proxy instead, replace the original URL with the API Gateway URL and change the Query String Parameters as follows:
 
@@ -184,7 +184,7 @@ An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
 An example of an HTTP GET request to HERE.com:
 
-`https://traffic.cit.api.here.com/traffic/6.2/incidents/json/8/134/86?app_id=<appID>&app_code=<appCode>`
+`https://traffic.api.here.com/traffic/6.2/incidents/json/8/134/86?app_id=<appID>&app_code=<appCode>`
 
 To call the Lambda proxy instead, replace the original URL with the API Gateway URL and change the Query String Parameters as follows:
 
@@ -198,7 +198,7 @@ Note: the Weather API is not available by default. Please contact the [here.com 
 
 An example of an HTTP GET request to HERE.com:
 
-`https://weather.cit.api.here.com/weather/1.0/report.json?app_id=<appID>&app_code=<appCode>&product=observation&name=Berlin-Tegel`
+`https://weather.api.here.com/weather/1.0/report.json?app_id=<appID>&app_code=<appCode>&product=observation&name=Berlin-Tegel`
 
 To call the Lambda proxy instead, replace the original URL with the API Gateway URL and change the Query String Parameters as follows:
 
