@@ -1,0 +1,32 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+
+Parameters:
+  HereAppId:
+    Type: String
+    Description: HERE Location Services API App ID (https://saas.awsmarketplace.here.com/faq#api-access)
+  HereAppCode:
+    Type: String
+    Description: HERE Location Services API App Code (https://saas.awsmarketplace.here.com/faq#api-access)
+
+Resources:
+  PositionFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Runtime: nodejs6.10
+      Handler: position.positionPOST
+      Description: 'A Lambda function that provides positioning estimates based on global Wi-Fi and cell coverage using HERE Location Services.'
+      Environment:
+        Variables:
+          HERE_APP_ID: !Ref HereAppId
+          HERE_APP_CODE: !Ref HereAppCode
+      Events:
+        GET:
+          Type: Api
+          Properties:
+            Path: /position
+            Method: post
+Outputs:
+  HereApiURL:
+    Description: "AWS API Gateway URL for HERE Position API."
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"

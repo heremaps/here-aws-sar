@@ -61,3 +61,7 @@ typings/
 .vs
 bin
 obj
+
+# User-specific stuff:
+*.idea/*
+*.DS_Store
