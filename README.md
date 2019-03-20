@@ -39,7 +39,7 @@ Download and install the [AWS CLI](https://aws.amazon.com/cli/), and run `aws co
 
 From GitHub: clone [this repository](https://github.com/heremaps/here-aws-sar), or download the ZIP.
 
-The folder containing the lambda source code (JS) and CloudFormation templates (YML) is `reInvent2017`.
+The folder containing the lambda source code (JS) and CloudFormation templates (YML) is `serverlessFunctions`.
 
 ### Step 5: Package
 
@@ -49,17 +49,17 @@ An S3 bucket is required as a destination for the AWS SAM package. If you don't 
 
 Note: If the folder contains a `package.json` file: run `npm update`:
 
-`x:\src\here-aws-repository\reInvent2017\mapimage>npm update`
+`x:\src\here-aws-repository\serverlessFunctions\mapimage>npm update`
 
 Use the AWS CLI to package (note the folder layout):
 
-`x:\src\here-aws-repository\reInvent2017>aws cloudformation package --s3-bucket here-maps-api--aws-sam --template-file geocode\geocode.yml --output-template-file geocode-packaged.yml`
+`x:\src\here-aws-repository\serverlessFunctions>aws cloudformation package --s3-bucket here-maps-api--aws-sam --template-file geocode\geocode.yml --output-template-file geocode-packaged.yml`
 
 ### Step 6: Deploy
 
 Use the AWS CLI to deploy the AWS SAM package using CloudFormation:
 
-`x:\src\here-aws-repository\reInvent2017>aws cloudformation deploy --capabilities CAPABILITY_IAM --stack-name "HERE-Maps-API--GeoCode" --parameter-overrides HereAppId=<appID> HereAppCode=<appCode> --template-file geocode-packaged.yml`
+`x:\src\here-aws-repository\serverlessFunctions>aws cloudformation deploy --capabilities CAPABILITY_IAM --stack-name "HERE-Maps-API--GeoCode" --parameter-overrides HereAppId=<appID> HereAppCode=<appCode> --template-file geocode-packaged.yml`
 
 ### Step 7: Find new API Gateway URL
 
