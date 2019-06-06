@@ -74,7 +74,7 @@ Alternatively look at the API Gateway in the AWS Console, select Stages, and the
 
 ### Step 8: Secure your API Gateways/Lambdas
 
-Note: the AWS Lambda proxies deployed above do not impose **authentication** or **authorization** restrictions!
+Note: The AWS Lambda proxies deployed above do not impose **authentication** or **authorization** restrictions!
 
 __You must decide how you will control access to your API Gateway and Lambdas.__
 
@@ -85,7 +85,8 @@ Consider implementing [AWS API Gateway Custom Authorizers](http://docs.aws.amazo
 ## HERE Maps APIs with Lambda Proxies
 The below list of HERE Maps APIs each has one Lambda as a proxy.
 
-`Note: All APIs except Map Image and Map Tile will return JSON response. For error scenarios, response JSON will be with 4xx - 5xx response code and details of error. For Map Image and MapTile API, success response will return base 64 encoding of map image (not JSON) and for failures, message as error in downloading map will be returned.`  
+`Note: All APIs except Map Image and Map Tile will return JSON response. For error scenarios, response JSON will be with 4xx - 5xx response code and details of error. 
+For Map Image and MapTile APIs, success response will return base 64 encoding of map image (not JSON) and for failures, message as error in downloading map will be returned.`  
 
 ### GeoCode
 
@@ -151,7 +152,7 @@ An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
 ### Position
 
-Note: this API call requires an HTTP **POST**. For GET requests "Missing Authentication Token" response given will be from AWS as **POST** request is expected.   
+Note: The API type is HTTP **POST**. For GET requests, "Missing Authentication Token" response will be returned from AWS as **POST** type request is expected.   
 
 An example of an HTTP POST to HERE API:
 
@@ -229,7 +230,7 @@ For details please refer [Public Transit API](https://developer.here.com/documen
 
 ### Weather
 
-Note: the Weather API is not available by default. Please contact the [here.com Sales Team](https://developer.here.com/contact-us#contact-sales) for more information.
+Note: The Weather API is not available by default. Please contact the [here.com Sales Team](https://developer.here.com/contact-us#contact-sales) for more information.
 
 An example of an HTTP GET request to HERE API:
 
