@@ -55,7 +55,7 @@ Resources:
   MapImageFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Runtime: nodejs6.10
+      Runtime: nodejs8.10
       Handler: mapimage.mapimageGET
       Description: 'A lambda function to get access to pre-rendered map images already optimized for desktop and mobile devices.'
       Environment:

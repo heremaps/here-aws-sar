@@ -22,38 +22,62 @@
 'use strict';
 
 const fs = require('fs');
-const request = require('request');
+const axios = require("axios");
 const HERE_APP_ID = process.env.HERE_APP_ID;
 const HERE_APP_CODE = process.env.HERE_APP_CODE;
+let statusCode, result;
 
-const postProcessResource = (resource, fn) => {
+const postProcessResource = async(resource, readFile) => {
     let ret = null;
     if (resource) {
-        if (fn) {
-            ret = fn(resource);
+        if (readFile) {
+            ret = readFile(resource);
         }
         try {
             fs.unlinkSync(resource);
         } catch (err) {
             // Ignore
+            console.log('unlinkSync err:'+err);
         }
     }
     return ret;
 };
 
-var download = function(uri, filename, callback){
-    request.head(uri, function(err, res, body){
+const download = async (url, filename) => {
+    const writer = fs.createWriteStream(filename);
 
-        request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+    await axios({
+        url,
+        method: 'GET',
+        responseType: 'stream'
+    }).then((response) => {
+        response.data.pipe(writer);
+
+        console.log('response status:'+response.status);
+
+        return new Promise((resolve, reject) => {
+            writer.on('finish',() => {
+                statusCode=response.status;
+                resolve();
+            });
+            writer.on('error',(error) => {
+                console.log('error in writing to file:'+error);
+                statusCode="500";
+                reject(new Error("error in writing to file"));
+            });
+        });
+    },(error) =>{
+        console.log('error in downloading map:'+error);
+        statusCode = (error.response.status)? error.response.status : "500";
     });
 };
 
-exports.maptileGET = (event, context, callback) => {
+exports.maptileGET = async (event, context) => {
     console.log(`>>> process.env.HERE_APP_ID: ${process.env.HERE_APP_ID}`);
     console.log(`>>> process.env.HERE_APP_CODE: ${process.env.HERE_APP_CODE}`);
     console.log(`>>> event:\r\n${JSON.stringify(event)}`);
 
-    let args = ""
+    let args = "";
     for (let qsp in event.params.querystring) {
         let qsa = "&" + qsp + "=" + event.params.querystring[qsp]
         console.log(`>>> QueryStringArg: ${qsa}`)
@@ -73,13 +97,13 @@ exports.maptileGET = (event, context, callback) => {
     const url = `${HERE_API}?app_id=${HERE_APP_ID}&app_code=${HERE_APP_CODE}`;
     console.log(`URL: ${url}`);
 
-    download(url, filename, function(){
-        console.log('done');
-        callback(null,
-            postProcessResource(
-                filename,
-                (file) => new Buffer(fs.readFileSync(file)).toString('base64')
-        )
-    );
-    });
+    await download(url, filename);
+
+    if(statusCode == "200") {
+        result = await postProcessResource(filename, (file) => new Buffer(fs.readFileSync(file)).toString('base64'));
+        context.succeed(result);
+    }
+    else {
+        context.fail('error in downloading map.');
+    }
 };

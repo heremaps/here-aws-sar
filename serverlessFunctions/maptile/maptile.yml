@@ -28,6 +28,7 @@ Resources:
                 "200":
                   description: "200 response"
                   schema:
+
                     $ref: "#/definitions/Empty"
               x-amazon-apigateway-integration:
                 responses:
@@ -55,7 +56,7 @@ Resources:
   MapTileFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Runtime: nodejs6.10
+      Runtime: nodejs8.10
       Handler: maptile.maptileGET
       Description: 'A lambda function to show fresh day-time map tiles in multiple styles (e.g. base, aerial) including rendered live-traffic tiles for flow overlay.'
       Environment:

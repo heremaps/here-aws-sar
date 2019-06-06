@@ -13,7 +13,7 @@ Resources:
   TrafficFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
-      Runtime: nodejs6.10
+      Runtime: nodejs8.10
       Handler: traffic.trafficGET
       Description:  'A lambda function to display map tiles with real-time traffic flow information overlays reflected as colored lines drawn on affected streets and roads and get access to real-time traffic flow and incident data in XML and JSON.'
       Environment:

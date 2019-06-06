@@ -21,32 +21,37 @@
 
 'use strict';
 
-const HERE_API = 'https://traffic.api.here.com/traffic/6.3/incidents/json'
+const HERE_API = 'https://traffic.api.here.com/traffic/6.3/incidents/json';
 
-const https = require("https");
+const axios = require("axios");
+let statusCode ='200';
 
-function queryApi(url, callback) {
-    https.get(url, res => {
-        res.setEncoding("utf8");
-    let body = "";
-    res.on("data", data => {
-        body += data;
-});
-    res.on("end", () => {
-        callback(body);
-});
-});
-}
+const getData = async url => {
+    try {
+        const response = await axios.get(url);
+        statusCode = response.status;
+        return response.data;
+    } catch (error) {
+        statusCode = error.response.status;
+        return error;
+    }
+};
 
-exports.trafficGET = (event, context, callback) => {
+exports.trafficGET = async(event, context) => {
     console.log(`>>> process.env.HERE_APP_ID: ${process.env.HERE_APP_ID}`);
     console.log(`>>> process.env.HERE_APP_CODE: ${process.env.HERE_APP_CODE}`);
-    console.log(`>>> event.pathParameters.A: ${event.pathParameters.A}`);
-    console.log(`>>> event.pathParameters.B: ${event.pathParameters.B}`);
-    console.log(`>>> event.pathParameters.C: ${event.pathParameters.C}`);
+
 
     const url = `${HERE_API}/${event.pathParameters.A}/${event.pathParameters.B}/${event.pathParameters.C}?app_id=${process.env.HERE_APP_ID}&app_code=${process.env.HERE_APP_CODE}`;
     console.log(`url: ${url}`);
 
-    queryApi(url, (body) => { callback(null, { body: body }); });
-}
+    const hlsAPIResponse = await getData(url);
+
+    const response = {
+        statusCode: statusCode,
+        // headers: { 'Access-Control-Allow-Origin': '*' },
+        body: (statusCode == '200')? JSON.stringify(hlsAPIResponse) :JSON.stringify({"Details":hlsAPIResponse.response.data.Details , "AdditionalData":hlsAPIResponse.response.data.AdditionalData ,
+            "type":hlsAPIResponse.response.data.type ,"subtype":hlsAPIResponse.response.data.subtype})
+    };
+    context.succeed(response);
+};

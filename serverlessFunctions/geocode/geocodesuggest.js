@@ -21,41 +21,42 @@
 
 'use strict';
 
+const axios = require("axios");
+
 const HERE_API_URL = 'https://autocomplete.geocoder.api.here.com/6.2/suggest.json'
 const HERE_API_APP_ID = process.env.HERE_APP_ID;
 const HERE_API_APP_CODE = process.env.HERE_APP_CODE;
+let statusCode = '200';
 
-const https = require("https");
+const getData = async url => {
+    try {
+        const response = await axios.get(url);
+        statusCode = response.status;
+        return response.data;
+    } catch (error) {
+        statusCode = error.response.status;
+        console.log('error:'+error.response.data.Details);
+        return error;
+    }
+};
 
-function queryApi(url, callback) {
-    https.get(url, res => {
-        res.setEncoding("utf8");
-    let body = "";
-    res.on("data", data => {
-        body += data;
-});
-    res.on("end", () => {
-        callback(body);
-});
-});
-}
-
-exports.geocodesuggestGET = (event, context, callback) => {
+exports.geocodesuggestGET = async (event, context) => {
     console.log(`>>> HERE_API: ${HERE_API_URL}`);
     console.log(`>>> HERE_API_APP_ID: ${HERE_API_APP_ID}`);
     console.log(`>>> HERE_API_APP_CODE: ${HERE_API_APP_CODE}`);
 
     const query = event.pathParameters.query;
-    console.log(`>>> query: ${query}`);
-
     const url = `${HERE_API_URL}?app_id=${HERE_API_APP_ID}&app_code=${HERE_API_APP_CODE}&query=${query}`;
     console.log(`>>> url: ${url}`);
 
-    queryApi(url, (body) => {
-        callback(null, {
-        statusCode: 200,
-            // headers: { 'Access-Control-Allow-Origin': '*' },
-            body: body
-    });
-});
+    const hlsAPIResponse = await getData(url);
+
+    const response = {
+        statusCode: statusCode,
+        // headers: { 'Access-Control-Allow-Origin': '*' },
+        body: (statusCode == '200')? JSON.stringify(hlsAPIResponse) : JSON.stringify({ 'message' : hlsAPIResponse.response.data.Details })
+    };
+
+    context.succeed(response);
+
 }

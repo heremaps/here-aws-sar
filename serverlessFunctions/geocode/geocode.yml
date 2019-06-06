@@ -13,7 +13,7 @@ Resources:
   GeocodeFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
-      Runtime: nodejs6.10
+      Runtime: nodejs8.10
       Handler: geocode.geocodeGET
       Description: 'A Lambda function that converts street addresses to geo-coordinates and vice-versa with geocoding, including landmarks, and reverse geocoding using HERE Location Services.'
       Environment:
@@ -29,7 +29,7 @@ Resources:
   GeocodeSuggestFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
-      Runtime: nodejs6.10
+      Runtime: nodejs8.10
       Handler: geocodesuggest.geocodesuggestGET
       Description: 'Correct misspellings and get better suggestions for your address search with fewer keystrokes.'
       Environment:

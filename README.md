@@ -13,13 +13,14 @@ To successfully call the HERE Maps APIs through the proxies in this project you 
 
 ## List of APIs with AWS Lambda Proxies
 * [geocode](https://developer.here.com/documentation/geocoder/topics/introduction.html) & [geocode autocomplete](https://developer.here.com/documentation/geocoder-autocomplete/topics/introduction.html)
-* [mapimage](https://developer.here.com/documentation/map-image/topics/introduction.html)
-* [maptile](https://developer.here.com/documentation/map-tile/topics/overview.html)
+* [map image](https://developer.here.com/documentation/map-image/topics/introduction.html)
+* [map tile](https://developer.here.com/documentation/map-tile/topics/introduction.html)
 * [places](https://developer.here.com/documentation/places/topics/introduction.html)
 * [position](https://developer.here.com/documentation/positioning/topics/introduction.html)
 * [routing](https://developer.here.com/documentation/routing/topics/overview.html) & [routing waypoints aka sequence](https://developer.here.com/documentation/routing-waypoints/topics/introduction.html)
 * [tollcost](https://developer.here.com/documentation/toll-cost/topics/introduction.html)
 * [traffic](https://developer.here.com/documentation/traffic/topics/introduction.html)
+* [transit](https://developer.here.com/documentation/transit/topics/what-is.html)
 * [weather](https://developer.here.com/documentation/weather/topics/overview.html)
 
 ## Setup
@@ -73,7 +74,7 @@ Alternatively look at the API Gateway in the AWS Console, select Stages, and the
 
 ### Step 8: Secure your API Gateways/Lambdas
 
-Note: the AWS Lambda proxies deployed above do not impose **authentication** or **authorization** restrictions!
+Note: The AWS Lambda proxies deployed above do not impose **authentication** or **authorization** restrictions!
 
 __You must decide how you will control access to your API Gateway and Lambdas.__
 
@@ -84,9 +85,15 @@ Consider implementing [AWS API Gateway Custom Authorizers](http://docs.aws.amazo
 ## HERE Maps APIs with Lambda Proxies
 The below list of HERE Maps APIs each has one Lambda as a proxy.
 
+`Note:`
+ 
+`1- All APIs except Map Image and Map Tile will return JSON response. For error scenarios, response JSON will be with 4xx - 5xx response code and details of error.`
+
+`2- For Map Image and MapTile APIs, success response will return base 64 encoding of map image (not JSON) and for failures, message as error in downloading map will be returned.`  
+
 ### GeoCode
 
-An example of an HTTP GET request to HERE.com:
+An example of an HTTP GET request to HERE API:
 
 `https://geocoder.api.here.com/6.2/geocode.json?app_id=<appID>&app_code=<appCode>&searchtext={searchtext}`
 
@@ -98,7 +105,7 @@ An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
 ### GeoCode AutoComplete
 
-An example of an HTTP GET request to HERE.com:
+An example of an HTTP GET request to HERE API:
 
 `https://autocomplete.geocoder.api.here.com/6.2/suggest.json?app_id=<appID>&app_code=<appCode>&query={query}`
 
@@ -108,9 +115,9 @@ An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
 `https://<apigw>.execute-api.<region>.amazonaws.com/Stage/geocodesuggest/{query}`
 
-### MapImage
+### Map Image
 
-An example of an HTTP GET request to HERE.com:
+An example of an HTTP GET request to HERE API:
 
 `https://image.maps.api.here.com/mia/1.6/mapview?app_id=<appID>&app_code=<appCode>&lat=63.529722&lon=-19.513889`
 
@@ -120,9 +127,23 @@ An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
 `https://<apigw>.execute-api.<region>.amazonaws.com/Stage/mapimage?t=1&lat=63.529722&lon=-19.513889`
 
+### Map Tile
+
+An example of an HTTP GET request to HERE API:
+
+`https://1.base.maps.api.here.com/maptile/2.1/maptile/newest/normal.day/13/4400/2686/256/jpg?app_id=<appID>&app_code=<appCode>`
+
+To call the Lambda proxy instead, replace the original URL with the API Gateway URL and change the Query String Parameters as follows:
+
+An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
+
+`https://<apigw>.execute-api.<region>.amazonaws.com/Stage/maptile/base/normal.day/13/4400/2686/256`
+
+For details please refer [HERE Map Tile API](https://developer.here.com/documentation/map-tile/topics/introduction.html)
+
 ### Places
 
-An example of an HTTP GET request to HERE.com:
+An example of an HTTP GET request to HERE API:
 
 `https://places.api.here.com/places/v1/autosuggest?app_id=<appID>&app_code=<appCode>&at=40.74917,-73.98529&q=chrysler`
 
@@ -134,9 +155,9 @@ An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
 ### Position
 
-Note: this API call requires an HTTP **POST**. See the Test project for an example payload.
+Note: The API type is HTTP **POST**. For GET requests, "Missing Authentication Token" response will be returned from AWS as **POST** type request is expected.   
 
-An example of an HTTP POST to HERE.com:
+An example of an HTTP POST to HERE API:
 
 `https://pos.api.here.com/positioning/v1/locate?app_id=<appID>&app_code=<appCode>`
 
@@ -144,9 +165,13 @@ An example of an HTTP POST to the equivalent AWS Lambda Proxy:
 
 `https://<apigw>.execute-api.<region>.amazonaws.com/Stage/position`
 
+Sample Payload : { "gsm": [{ "mcc":262,"mnc":1,"lac":5126,"cid":21857 }] }
+
+For details please refer [HERE Positioning API](https://developer.here.com/documentation/positioning/topics/request-first-locate.html)
+
 ### Routing
 
-An example of an HTTP GET request to HERE.com:
+An example of an HTTP GET request to HERE API:
 
 `https://route.api.here.com/routing/7.2/calculateroute.json?app_id=<appID>&app_code=<appCode>&waypoint0=geo!52.5%2c13.4&waypoint1=geo!52.5%2c13.45&mode=fastest%3bcar%3btraffic:disabled%3b`
 
@@ -158,7 +183,7 @@ An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
 ### Waypoint Sequence (Routing)
 
-An example of an HTTP GET request to HERE.com:
+An example of an HTTP GET request to HERE API:
 
 `https://wse.api.here.com/2/findsequence.json?app_id=<appID>&app_code=<appCode>&start=WiesbadenCentralStation%3b50.0715%2c8.2434&destination1=FranfurtCentralStation%3b50.1073%2c8.6647&destination2=DarmstadtCentralStation%3b49.8728%2c8.6326&destination3=FrankfurtAirport%3b50.0505%2c8.5698&destination4=HanauCentralStation%3b50.1218%2c8.9298&end=MainzCentralStation%3b50.0021%2c8.259&improveFor=time&departure=2014-12-09T09:30:00%2b01:00&mode=fastest%3bcar%3btraffic:disabled%3b`
 
@@ -170,7 +195,7 @@ An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
 ### Toll Cost
 
-An example of an HTTP GET request to HERE.com:
+An example of an HTTP GET request to HERE API:
 
 `https://tce.api.here.com/2/calculateroute.json?app_id=<appID>&app_code=<appCode>&waypoint0=49.33729606975952%2c0.5986232869327068&waypoint1=49.493527937780975%2c0.10129541603788539&mode=fastest%3bcar%26cost_optimize%3d1`
 
@@ -182,7 +207,7 @@ An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
 ### Traffic
 
-An example of an HTTP GET request to HERE.com:
+An example of an HTTP GET request to HERE API:
 
 `https://traffic.api.here.com/traffic/6.2/incidents/json/8/134/86?app_id=<appID>&app_code=<appCode>`
 
@@ -192,11 +217,25 @@ An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
 `https://<apigw>.execute-api.<region>.amazonaws.com/Stage/traffic/8/134/86`
 
+### Transit
+
+An example of an HTTP GET request to HERE API:
+
+`https://transit.api.here.com/v3/route.json?app_id=<appID>&app_code=<appCode>&arr=41.8961,-87.6552&dep=41.9773,-87.9019&routing=all&time=2019-06-24T07:30:00`
+
+To call the Lambda proxy instead, replace the original URL with the API Gateway URL and change the Query String Parameters as follows:
+
+An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
+
+`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/transit?routing=all&dep=41.9773%2C-87.9019&arr=41.8961%2C-87.6552&time=2019-06-24T07%3A30%3A00`
+
+For details please refer [Public Transit API](https://developer.here.com/documentation/transit/topics/quick-start-routing.html)
+
 ### Weather
 
-Note: the Weather API is not available by default. Please contact the [here.com Sales Team](https://developer.here.com/contact-us#contact-sales) for more information.
+Note: The Weather API is not available by default. Please contact the [here.com Sales Team](https://developer.here.com/contact-us#contact-sales) for more information.
 
-An example of an HTTP GET request to HERE.com:
+An example of an HTTP GET request to HERE API:
 
 `https://weather.api.here.com/weather/1.0/report.json?app_id=<appID>&app_code=<appCode>&product=observation&name=Berlin-Tegel`
 
@@ -208,6 +247,6 @@ An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
 ## License
 
-Copyright (c) 2017 HERE Europe B.V.
+Copyright (c) 2017-2019 HERE Europe B.V.
 
 See the [LICENSE](./LICENSE) file in the root of this project for license details.
