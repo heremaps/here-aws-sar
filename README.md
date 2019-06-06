@@ -86,6 +86,7 @@ Consider implementing [AWS API Gateway Custom Authorizers](http://docs.aws.amazo
 The below list of HERE Maps APIs each has one Lambda as a proxy.
 
 `Note: All APIs except Map Image and Map Tile will return JSON response. For error scenarios, response JSON will be with 4xx - 5xx response code and details of error. 
+
 For Map Image and MapTile APIs, success response will return base 64 encoding of map image (not JSON) and for failures, message as error in downloading map will be returned.`  
 
 ### GeoCode
