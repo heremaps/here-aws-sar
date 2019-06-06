@@ -23,22 +23,21 @@
 
 const HERE_API = 'https://weather.api.here.com/weather/1.0/report.json'
 
-const https = require("https");
+const axios = require("axios");
+let statusCode ='200';
 
-function queryApi(url, callback) {
-    https.get(url, res => {
-        res.setEncoding("utf8");
-    let body = "";
-    res.on("data", data => {
-        body += data;
-});
-    res.on("end", () => {
-        callback(body);
-});
-});
-}
+const getData = async url => {
+    try {
+        const response = await axios.get(url);
+        statusCode = response.status;
+        return response.data;
+    } catch (error) {
+        statusCode = error.response.status;
+        return error;
+    }
+};
 
-exports.weatherGET = (event, context, callback) => {
+exports.weatherGET = async(event, context) => {
     console.log(`>>> process.env.HERE_APP_ID: ${process.env.HERE_APP_ID}`);
     console.log(`>>> process.env.HERE_APP_CODE: ${process.env.HERE_APP_CODE}`);
 
@@ -52,5 +51,12 @@ exports.weatherGET = (event, context, callback) => {
     const url = `${HERE_API}?app_id=${process.env.HERE_APP_ID}&app_code=${process.env.HERE_APP_CODE}` + args;
     console.log(`url: ${url}`);
 
-    queryApi(url, (body) => { callback(null, { body: body }); });
+    const hlsAPIResponse = await getData(url);
+    const response = {
+        statusCode: statusCode,
+        // headers: { 'Access-Control-Allow-Origin': '*' },
+        body: (statusCode == '200')? JSON.stringify(hlsAPIResponse) : JSON.stringify({"Type ":hlsAPIResponse.response.data.Type , "Message":hlsAPIResponse.response.data.Message})
+    };
+
+    context.succeed(response);
 }

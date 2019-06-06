@@ -21,45 +21,43 @@
 
 'use strict';
 
-const https = require("https");
+const axios = require("axios");
+const HERE_API = 'https://pos.api.here.com:443/positioning/v1/locate';
+let statusCode ='200';
 
-function queryApi(postData, callback) {
+const loadPositionInfo = async postData => {
+    const url = `${HERE_API}?app_id=${process.env.HERE_APP_ID}&app_code=${process.env.HERE_APP_CODE}`;
     const options = {
-        hostname: 'pos.api.here.com',
-        port: 443,
-        path: `/positioning/v1/locate?app_id=${process.env.HERE_APP_ID}&app_code=${process.env.HERE_APP_CODE}`,
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': Buffer.byteLength(postData)
+            'Content-Type': 'application/json'
         }
     };
     console.log(">>>> options\r\n" + JSON.stringify(options));
+    console.log(`>>> url: ${url}`);
 
-    const req = https.request(options, res => {
-        res.setEncoding("utf8");
-    let body = "";
-    res.on("data", data => {
-        body += data;
-});
-    res.on("end", () => {
-        callback(body);
-});
-});
+    try {
+        const response = await axios.post(url,postData,options);
+        statusCode = response.status;
+        return response.data;
+    } catch (error) {
+        statusCode = error.response.status;
+        return error;
+    }
+};
 
-    req.on('error', (e) => {
-        console.error(`>>> error: ${e.message}`);
-});
-    req.write(postData);
-    req.end();
-}
-
-exports.positionPOST = (event, context, callback) => {
+exports.positionPOST = async(event, context) => {
     console.log(`>>> process.env.HERE_APP_ID: ${process.env.HERE_APP_ID}`);
     console.log(`>>> process.env.HERE_APP_CODE: ${process.env.HERE_APP_CODE}`);
 
     const postData = event.body;
     console.log(`>>> incoming HTTP POST contents:\r\n${postData}`);
 
-    queryApi(postData, (body) => { callback(null, { body: body }); });
-}
+    const hlsAPIResponse = await loadPositionInfo(postData);
+
+    const response = {
+        statusCode: statusCode,
+        body: (statusCode == '200')? JSON.stringify(hlsAPIResponse) : JSON.stringify({"error ":hlsAPIResponse.response.data.error})
+    };
+    context.succeed(response);
+};

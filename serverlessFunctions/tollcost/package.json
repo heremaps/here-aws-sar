@@ -1,7 +1,7 @@
 {
-  "name": "mapimage",
-  "version": "0.1.0",
-  "description": "AWS Lambda proxy for HERE Maps API MapImage",
+  "name": "tollcost",
+  "version": "1.2.0",
+  "description": "AWS Lambda proxy for HERE Tollcost API",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",

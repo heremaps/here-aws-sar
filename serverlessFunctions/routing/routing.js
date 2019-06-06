@@ -23,41 +23,43 @@
 
 const HERE_API = 'https://route.api.here.com/routing/7.2/calculateroute.json'
 
-const https = require("https");
+const axios = require("axios");
+let statusCode = '200';
 
-function queryApi(url, callback) {
-    https.get(url, res => {
-        res.setEncoding("utf8");
-    let body = "";
-    res.on("data", data => {
-        body += data;
-});
-    res.on("end", () => {
-        callback(body);
-});
-});
-}
+const getData = async url => {
+    try {
+        const response = await axios.get(url);
+        statusCode = response.status;
+        return response.data;
+    } catch (error) {
+        statusCode = error.response.status;
+        // console.log('RESP:'+JSON.stringify(error.response.data));
+        return error;
+    }
+};
 
-exports.routingGET = (event, context, callback) => {
+exports.routingGET = async (event, context) => {
     console.log(`>>> process.env.HERE_APP_ID: ${process.env.HERE_APP_ID}`);
     console.log(`>>> process.env.HERE_APP_CODE: ${process.env.HERE_APP_CODE}`);
 
-    let args = ""
+    let args = "";
     for (let qsp in event.queryStringParameters) {
         let qsa = "&" + qsp + "=" + event['queryStringParameters'][qsp]
-        console.log(`>>> QueryStringArg: ${qsa}`)
+        console.log(`>>> QueryStringArg: ${qsa}`);
         args += qsa
     }
 
     const url = `${HERE_API}?app_id=${process.env.HERE_APP_ID}&app_code=${process.env.HERE_APP_CODE}` + args;
     console.log(`>>> url: ${url}`);
 
-    queryApi(url, (body) => {
-        let response = {
-            statusCode: 200,
-            // headers: { 'Access-Control-Allow-Origin': '*' },
-            body: body
-        };
-    callback(null, response);
-});
-}
+    const hlsAPIResponse = await getData(url);
+
+    const response = {
+        statusCode: statusCode,
+        // headers: { 'Access-Control-Allow-Origin': '*' },
+        body: (statusCode == '200')? JSON.stringify(hlsAPIResponse) : JSON.stringify({"type":hlsAPIResponse.response.data.type,"subtype":hlsAPIResponse.response.data.subtype,
+            "details":hlsAPIResponse.response.data.details})
+    };
+
+    context.succeed(response);
+};

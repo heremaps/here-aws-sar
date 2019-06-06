@@ -13,7 +13,7 @@ Resources:
   WeatherFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
-      Runtime: nodejs6.10
+      Runtime: nodejs8.10
       Handler: weather.weatherGET
       Description: 'A lambda function to give insights into real-time weather forecasts, alerts, and astronomical info for any location.'
       Environment:

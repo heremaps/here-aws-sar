@@ -8,6 +8,6 @@
     "url": "https://github.com/heremaps/here-aws-sar.git"
   },
   "dependencies": {
-    "request": "^2.88.0"
+    "axios": "^0.18.0"
   }
 }
