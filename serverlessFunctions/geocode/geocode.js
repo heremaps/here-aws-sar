@@ -23,9 +23,8 @@
 
 const axios = require("axios");
 
-const HERE_API_URL = 'https://geocoder.api.here.com/6.2/geocode.json';
-const HERE_API_APP_ID = process.env.HERE_APP_ID;
-const HERE_API_APP_CODE = process.env.HERE_APP_CODE;
+const HERE_API_URL = 'https://geocoder.ls.hereapi.com/6.2/geocode.json';
+const HERE_API_KEY = process.env.HERE_API_KEY;
 let statusCode = '200';
 
 const getData = async url => {
@@ -42,13 +41,12 @@ const getData = async url => {
 
 exports.geocodeGET = async (event, context) => {
     console.log(`>>> HERE_API: ${HERE_API_URL}`);
-    console.log(`>>> HERE_API_APP_ID: ${HERE_API_APP_ID}`);
-    console.log(`>>> HERE_API_APP_CODE: ${HERE_API_APP_CODE}`);
+    console.log(`>>> HERE_API_KEY: ${HERE_API_KEY}`);
 
     const searchtext = event.pathParameters.searchtext;
     console.log(`>>> searchtext: ${searchtext}`);
 
-    const url = `${HERE_API_URL}?app_id=${HERE_API_APP_ID}&app_code=${HERE_API_APP_CODE}&searchtext=${searchtext}`;
+    const url = `${HERE_API_URL}?apiKey=${HERE_API_KEY}&searchtext=${searchtext}`;
     console.log(`>>> url: ${url}`);
 
     const hlsAPIResponse = await getData(url);

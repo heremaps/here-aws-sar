@@ -13,8 +13,7 @@ namespace HERE_AWS_SAR
     public class Tests_GeoCoder
     {
         private static string AWS_URL;
-        private static string HereApi_AppID;
-        private static string HereApi_AppCode;
+        private static string HereApi_ApiKey;
         private static string HereApi_DNS = "geocoder.cit.api.here.com";
         private static string HereApi_URL = $"https://{HereApi_DNS}/6.2/geocode.json";
 
@@ -24,8 +23,7 @@ namespace HERE_AWS_SAR
         [ClassInitialize]
         public static void Class_Init(TestContext ctx)
         {
-            HereApi_AppID = ctx.Properties["HereApi-AppID"] as string ?? throw new InvalidOperationException("Missing 'AppID' from .RunSettings");
-            HereApi_AppCode = ctx.Properties["HereApi-AppCode"] as string ?? throw new InvalidOperationException("Missing 'AppCode' from .RunSettings");
+            HereApi_ApiKey = ctx.Properties["HereApi_ApiKey"] as string ?? throw new InvalidOperationException("Missing 'ApiKey' from .RunSettings");
 
             AWS_URL = ctx.Properties["AwsApiGateway-GeoCoder"] as string ?? throw new InvalidOperationException("Missing 'ApiGatewayUrl' from .RunSettings");
         }
@@ -33,7 +31,7 @@ namespace HERE_AWS_SAR
         [TestMethod]
         public void GeoCoder()
         {
-            var uriHere = new Uri(HereApi_URL + $"?app_id={HereApi_AppID}&app_code={HereApi_AppCode}&searchtext={searchText}");
+            var uriHere = new Uri(HereApi_URL + $"?apiKey={HereApi_ApiKey}&searchtext={searchText}");
             Debug.WriteLine($"Here Maps API URL: {uriHere}");
 
             var uriAWS = new Uri(AWS_URL + $"/geocode/{searchText}");

@@ -4,10 +4,10 @@ Transform: 'AWS::Serverless-2016-10-31'
 Parameters:
   HereAppId:
     Type: String
-    Description: HERE Location Services API App ID (https://saas.awsmarketplace.here.com/faq#api-access)
+    Description: HERE Location Services API App ID (https://developer.here.com/faqs#access-control)
   HereAppCode:
     Type: String
-    Description: HERE Location Services API App Code (https://saas.awsmarketplace.here.com/faq#api-access)
+    Description: HERE Location Services API App Code (https://developer.here.com/faqs#access-control)
 
 Resources:
   TollCostFunction:

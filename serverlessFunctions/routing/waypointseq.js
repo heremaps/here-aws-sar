@@ -21,7 +21,7 @@
 
 'use strict';
 
-const HERE_API = 'https://wse.api.here.com/2/findsequence.json'
+const HERE_API = 'https://wse.ls.hereapi.com/2/findsequence.json'
 
 const axios = require("axios");
 let statusCode = '200';
@@ -41,8 +41,7 @@ const getData = async url => {
 
 
 exports.waypointseqGET = async (event, context) => {
-    console.log(`>>> process.env.HERE_APP_ID: ${process.env.HERE_APP_ID}`);
-    console.log(`>>> process.env.HERE_APP_CODE: ${process.env.HERE_APP_CODE}`);
+    console.log(`>>> process.env.HERE_API_KEY: ${process.env.HERE_API_KEY}`);
 
     let args = "";
     for (let qsp in event.queryStringParameters) {
@@ -51,7 +50,7 @@ exports.waypointseqGET = async (event, context) => {
         args += qsa;
     }
 
-    const url = `${HERE_API}?app_id=${process.env.HERE_APP_ID}&app_code=${process.env.HERE_APP_CODE}` + args;
+    const url = `${HERE_API}?apiKey=${process.env.HERE_API_KEY}` + args;
     console.log(`>>> url: ${url}`);
 
     const hlsAPIResponse = await getData(url);

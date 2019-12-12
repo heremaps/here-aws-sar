@@ -22,11 +22,11 @@
 'use strict';
 
 const axios = require("axios");
-const HERE_API = 'https://pos.api.here.com:443/positioning/v1/locate';
+const HERE_API = 'https://pos.ls.hereapi.com/positioning/v1/locate';
 let statusCode ='200';
 
 const loadPositionInfo = async postData => {
-    const url = `${HERE_API}?app_id=${process.env.HERE_APP_ID}&app_code=${process.env.HERE_APP_CODE}`;
+    const url = `${HERE_API}?apiKey=${process.env.HERE_API_KEY}`;
     const options = {
         method: 'POST',
         headers: {
@@ -47,8 +47,7 @@ const loadPositionInfo = async postData => {
 };
 
 exports.positionPOST = async(event, context) => {
-    console.log(`>>> process.env.HERE_APP_ID: ${process.env.HERE_APP_ID}`);
-    console.log(`>>> process.env.HERE_APP_CODE: ${process.env.HERE_APP_CODE}`);
+    console.log(`>>> process.env.HERE_API_KEY: ${process.env.HERE_API_KEY}`);
 
     const postData = event.body;
     console.log(`>>> incoming HTTP POST contents:\r\n${postData}`);

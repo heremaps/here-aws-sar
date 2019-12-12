@@ -23,8 +23,7 @@
 
 const fs = require('fs');
 const axios = require("axios");
-const HERE_APP_ID = process.env.HERE_APP_ID;
-const HERE_APP_CODE = process.env.HERE_APP_CODE;
+const HERE_API_KEY = process.env.HERE_API_KEY;
 let statusCode, result;
 
 const postProcessResource = async(resource, readFile) => {
@@ -73,8 +72,7 @@ const download = async (url, filename) => {
 };
 
 exports.maptileGET = async (event, context) => {
-    console.log(`>>> process.env.HERE_APP_ID: ${process.env.HERE_APP_ID}`);
-    console.log(`>>> process.env.HERE_APP_CODE: ${process.env.HERE_APP_CODE}`);
+    console.log(`>>> HERE_API_KEY: ${HERE_API_KEY}`);
     console.log(`>>> event:\r\n${JSON.stringify(event)}`);
 
     let args = "";
@@ -91,10 +89,10 @@ exports.maptileGET = async (event, context) => {
     const row = event.params.path.row;
     const rez = event.params.path.rez;
 
-    const HERE_API = `https://1.${type}.maps.api.here.com/maptile/2.1/maptile/newest/${scheme}/${zoomlevel}/${col}/${row}/${rez}/jpg`;
+    const HERE_API = `https://1.${type}.maps.ls.hereapi.com/maptile/2.1/maptile/newest/${scheme}/${zoomlevel}/${col}/${row}/${rez}/jpg`;
 
     const filename = "/tmp/maptile.png";
-    const url = `${HERE_API}?app_id=${HERE_APP_ID}&app_code=${HERE_APP_CODE}`;
+    const url = `${HERE_API}?apiKey=${HERE_API_KEY}`;
     console.log(`URL: ${url}`);
 
     await download(url, filename);

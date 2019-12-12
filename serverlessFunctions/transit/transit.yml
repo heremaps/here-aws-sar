@@ -2,12 +2,9 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 
 Parameters:
-  HereAppId:
+  HereApiKey:
     Type: String
-    Description: HERE Location Services API App ID (https://saas.awsmarketplace.here.com/faq#api-access)
-  HereAppCode:
-    Type: String
-    Description: HERE Location Services API App Code (https://saas.awsmarketplace.here.com/faq#api-access)
+    Description: HERE Location Services API Key (https://developer.here.com/faqs#access-control)
 
 Resources:
   TransitFunction:
@@ -18,8 +15,7 @@ Resources:
       Description: 'A Lambda function to get access to features that go beyond simple estimated transit routing like search, next departures, transit isoline and pedestrian access points.'
       Environment:
         Variables:
-          HERE_APP_ID: !Ref HereAppId
-          HERE_APP_CODE: !Ref HereAppCode
+          HERE_API_KEY: !Ref HereApiKey
       Events:
         GET:
           Type: Api

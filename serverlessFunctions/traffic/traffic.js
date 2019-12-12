@@ -21,7 +21,7 @@
 
 'use strict';
 
-const HERE_API = 'https://traffic.api.here.com/traffic/6.3/incidents/json';
+const HERE_API = 'https://traffic.ls.hereapi.com/traffic/6.3/incidents/json';
 
 const axios = require("axios");
 let statusCode ='200';
@@ -38,11 +38,10 @@ const getData = async url => {
 };
 
 exports.trafficGET = async(event, context) => {
-    console.log(`>>> process.env.HERE_APP_ID: ${process.env.HERE_APP_ID}`);
-    console.log(`>>> process.env.HERE_APP_CODE: ${process.env.HERE_APP_CODE}`);
+    console.log(`>>> process.env.HERE_API_KEY: ${process.env.HERE_API_KEY}`);
 
 
-    const url = `${HERE_API}/${event.pathParameters.A}/${event.pathParameters.B}/${event.pathParameters.C}?app_id=${process.env.HERE_APP_ID}&app_code=${process.env.HERE_APP_CODE}`;
+    const url = `${HERE_API}/${event.pathParameters.A}/${event.pathParameters.B}/${event.pathParameters.C}?apiKey=${process.env.HERE_API_KEY}`;
     console.log(`url: ${url}`);
 
     const hlsAPIResponse = await getData(url);

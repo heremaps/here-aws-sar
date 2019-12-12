@@ -2,12 +2,9 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 
 Parameters:
-  HereAppId:
+  HereApiKey:
     Type: String
-    Description: HERE Location Services API App ID (https://saas.awsmarketplace.here.com/faq#api-access)
-  HereAppCode:
-    Type: String
-    Description: HERE Location Services API App Code (https://saas.awsmarketplace.here.com/faq#api-access)
+    Description: HERE Location Services API Key (https://developer.here.com/faqs#access-control)
 
 Resources:
   RoutingFunction:
@@ -18,8 +15,7 @@ Resources:
       Description: 'A lambda function to provide precise instructions to a destination using various transport modes (e.g., car, truck, public transit, bicycle) and leveraging different algorithms (e.g., matrix, isoline routing).'
       Environment:
         Variables:
-          HERE_APP_ID: !Ref HereAppId
-          HERE_APP_CODE: !Ref HereAppCode
+          HERE_API_KEY: !Ref HereApiKey
       Events:
         GET:
           Type: Api
@@ -34,8 +30,7 @@ Resources:
       Description: 'Calculate a list of sequence-optimized waypoints.'
       Environment:
         Variables:
-          HERE_APP_ID: !Ref HereAppId
-          HERE_APP_CODE: !Ref HereAppCode
+          HERE_API_KEY: !Ref HereApiKey
       Events:
         GET:
           Type: Api

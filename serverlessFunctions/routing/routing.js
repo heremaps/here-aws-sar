@@ -21,7 +21,7 @@
 
 'use strict';
 
-const HERE_API = 'https://route.api.here.com/routing/7.2/calculateroute.json'
+const HERE_API = 'https://route.ls.hereapi.com/routing/7.2/calculateroute.json'
 
 const axios = require("axios");
 let statusCode = '200';
@@ -39,8 +39,7 @@ const getData = async url => {
 };
 
 exports.routingGET = async (event, context) => {
-    console.log(`>>> process.env.HERE_APP_ID: ${process.env.HERE_APP_ID}`);
-    console.log(`>>> process.env.HERE_APP_CODE: ${process.env.HERE_APP_CODE}`);
+    console.log(`>>> process.env.HERE_API_URL: ${process.env.HERE_API_URL}`);
 
     let args = "";
     for (let qsp in event.queryStringParameters) {
@@ -49,7 +48,7 @@ exports.routingGET = async (event, context) => {
         args += qsa
     }
 
-    const url = `${HERE_API}?app_id=${process.env.HERE_APP_ID}&app_code=${process.env.HERE_APP_CODE}` + args;
+    const url = `${HERE_API}?apiKey=${process.env.HERE_API_KEY}` + args;
     console.log(`>>> url: ${url}`);
 
     const hlsAPIResponse = await getData(url);
