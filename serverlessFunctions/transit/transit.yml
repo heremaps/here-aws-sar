@@ -10,7 +10,7 @@ Resources:
   TransitFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
-      Runtime: nodejs8.10
+      Runtime: nodejs12.x
       Handler: transit.transitGET
       Description: 'A Lambda function to get access to features that go beyond simple estimated transit routing like search, next departures, transit isoline and pedestrian access points.'
       Environment:
@@ -20,7 +20,7 @@ Resources:
         GET:
           Type: Api
           Properties:
-            Path: /transit
+            Path: /transit/api/{resourcePath+}
             Method: get
 Outputs:
   HereApiURL:

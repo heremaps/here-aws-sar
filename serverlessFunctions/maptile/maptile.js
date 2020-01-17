@@ -73,7 +73,6 @@ const download = async (url, filename) => {
 
 exports.maptileGET = async (event, context) => {
     console.log(`>>> HERE_API_KEY: ${HERE_API_KEY}`);
-    console.log(`>>> event:\r\n${JSON.stringify(event)}`);
 
     let args = "";
     for (let qsp in event.params.querystring) {
@@ -83,21 +82,17 @@ exports.maptileGET = async (event, context) => {
     }
 
     const type = event.params.path.type;
-    const scheme = event.params.path.scheme;
-    const zoomlevel = event.params.path.zoomlevel;
-    const col = event.params.path.col;
-    const row = event.params.path.row;
-    const rez = event.params.path.rez;
+    const resourcePath = event.params.path.resourcePath;
 
-    const HERE_API = `https://1.${type}.maps.ls.hereapi.com/maptile/2.1/maptile/newest/${scheme}/${zoomlevel}/${col}/${row}/${rez}/jpg`;
+    const HERE_API_URL = `https://1.${type}.maps.ls.hereapi.com/${resourcePath}`;
 
     const filename = "/tmp/maptile.png";
-    const url = `${HERE_API}?apiKey=${HERE_API_KEY}`;
+    const url = `${HERE_API_URL}?apiKey=${HERE_API_KEY}${args}`;
     console.log(`URL: ${url}`);
 
     await download(url, filename);
 
-    if(statusCode == "200") {
+    if(parseInt(statusCode) === 200) {
         result = await postProcessResource(filename, (file) => new Buffer(fs.readFileSync(file)).toString('base64'));
         context.succeed(result);
     }

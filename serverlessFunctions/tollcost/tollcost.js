@@ -27,14 +27,14 @@ const axios = require("axios");
 let statusCode ='200';
 
 const getData = async url => {
-    try {
-        const response = await axios.get(url);
-        statusCode = response.status;
+	try {
+		const response = await axios.get(url);
+		statusCode = response.status;
         return response.data;
-    } catch (error) {
-        statusCode = error.response.status;
-        return error;
-    }
+		} catch (error) {
+		statusCode = error.response.status;
+		return error;
+}
 };
 
 exports.tollcostGET = async(event, context) => {
@@ -52,11 +52,11 @@ exports.tollcostGET = async(event, context) => {
     console.log(`>>> url: ${url}`);
 
     const hlsAPIResponse = await getData(url);
-    const response = {
-        statusCode: statusCode,
-        // headers: { 'Access-Control-Allow-Origin': '*' },
-        body: (statusCode == '200')? JSON.stringify(hlsAPIResponse) : JSON.stringify({"issues ":hlsAPIResponse.response.data.issues , "response":hlsAPIResponse.response.data.response ,
-            "error_id ":hlsAPIResponse.response.data.error_id , "response_code ":hlsAPIResponse.response.data.response_code})
-    };
-    context.succeed(response);
+           const response = {
+               statusCode: statusCode,
+               // headers: { 'Access-Control-Allow-Origin': '*' },
+               body: (parseInt(statusCode) === 200)? JSON.stringify(hlsAPIResponse) : JSON.stringify({"issues ":hlsAPIResponse.response.data.issues , "response":hlsAPIResponse.response.data.response ,
+               "error_id ":hlsAPIResponse.response.data.error_id , "response_code ":hlsAPIResponse.response.data.response_code})
+           };
+           context.succeed(response);
 };

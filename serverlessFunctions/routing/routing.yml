@@ -10,7 +10,7 @@ Resources:
   RoutingFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
-      Runtime: nodejs8.10
+      Runtime: nodejs12.x
       Handler: routing.routingGET
       Description: 'A lambda function to provide precise instructions to a destination using various transport modes (e.g., car, truck, public transit, bicycle) and leveraging different algorithms (e.g., matrix, isoline routing).'
       Environment:
@@ -20,12 +20,12 @@ Resources:
         GET:
           Type: Api
           Properties:
-            Path: /routing
+            Path: /routing/api/{type}/{resourcePath+}
             Method: get
   WaypointSequenceFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
-      Runtime: nodejs8.10
+      Runtime: nodejs12.x
       Handler: waypointseq.waypointseqGET
       Description: 'Calculate a list of sequence-optimized waypoints.'
       Environment:
@@ -35,7 +35,7 @@ Resources:
         GET:
           Type: Api
           Properties:
-            Path: /waypointseq
+            Path: /waypointseq/api/{resourcePath+}
             Method: get
 
 Outputs:

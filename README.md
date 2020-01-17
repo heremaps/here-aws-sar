@@ -93,6 +93,13 @@ The below list of HERE Maps APIs each has one Lambda as a proxy.
 
 ### GeoCode
 
+URL Mapping
+
+|API                  | HERE URL Prefix                                 |  AWS Lambda App URL Prefix |
+|-------------------- |-------------------------------------------------|-----------------------------------------------------------|
+|GeoCoder             | `https://geocoder.ls.hereapi.com/`              |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/geocoder/` |
+|GeoCoder             | `https://reverse.geocoder.ls.hereapi.com/`      |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/reverse.geocoder/` |GeoCode AutoComplete | `https://autocomplete.geocoder.ls.hereapi.com/` |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/autocomplete.geocoder` |
+
 An example of an HTTP GET request to HERE API:
 
 `https://geocoder.ls.hereapi.com/6.2/geocode.json?apiKey=<apiKey>&searchtext={searchtext}`
@@ -101,21 +108,48 @@ To call the Lambda proxy instead, replace the original URL with the API Gateway 
 
 An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
-`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/{searchtext}`
+`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/geocoder/6.2/geocode.json?searchtext={searchtext}`
 
-### GeoCode AutoComplete
-
-An example of an HTTP GET request to HERE API:
+An example of an HTTP GET request to HERE GeoCode AutoComplete API:
 
 `https://autocomplete.geocoder.ls.hereapi.com/6.2/suggest.json?apiKey=<apiKey>&query={query}`
 
 To call the Lambda proxy instead, replace the original URL with the API Gateway URL and change the Query String Parameters as follows:
 
+
 An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
-`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocodesuggest/{query}`
+`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocodesuggest/api/6.2/suggest.json?query={query}`
+
+The AWS Lambda Proxy URL depends on the base URL type. For example:
+
+* https://geocoder.ls.hereapi.com/6.2/geocode.json
+
+    Base URL: geocoder
+
+    Lambda Proxy URL: /geocode/api/geocoder/
+
+* https://reverse.geocoder.ls.hereapi.com/6.2/multi-reversegeocode.json
+
+    Base URL: reverse.geocoder
+
+    Lambda Proxy URL: /geocode/api/reverse.geocoder/
+
+* https://autocomplete.geocoder.ls.hereapi.com/6.2/suggest.json
+
+    Base URL: autocomplete.geocoder
+
+    Lambda Proxy URL: /geocode/api/autocomplete.geocoder/
+
+For details please refer [HERE Geocode API](https://developer.here.com/documentation/geocoder/topics/introduction.html) & [HERE Geocode Autocomplete API](https://developer.here.com/documentation/geocoder-autocomplete/topics/introduction.html)
 
 ### Map Image
+
+URL Mapping
+
+|API                  | HERE URL Prefix                                 |  AWS Lambda App URL Prefix |
+|-------------------- |-------------------------------------------------|-----------------------------------------------------------|
+|Images               | `https://image.maps.ls.hereapi.com/`            |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/mapimage/api/` |
 
 An example of an HTTP GET request to HERE API:
 
@@ -125,9 +159,19 @@ To call the Lambda proxy instead, replace the original URL with the API Gateway 
 
 An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
-`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/mapimage?t=1&lat=63.529722&lon=-19.513889`
+`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/mapimage/api/mia/1.6/mapview?t=1&lat=63.529722&lon=-19.513889`
+
+For details please refer [HERE Map Image API](https://developer.here.com/documentation/map-image/topics/introduction.html)
 
 ### Map Tile
+
+URL Mapping
+
+|API                  | HERE URL Prefix                                 |  AWS Lambda App URL Prefix |
+|-------------------- |-------------------------------------------------|-----------------------------------------------------------|
+|MapTile              | `https://{1-4}.traffic.maps.ls.hereapi.com/`    |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/maptile/api/traffic/`
+|MapTile              | `https://{1.4}.base.maps.ls.hereapi.com/`       |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/maptile/api/base/`
+|MapTile              | `https://{1.4}.aerial.maps.ls.hereapi.com/`     |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/maptile/api/aerial/`
 
 An example of an HTTP GET request to HERE API:
 
@@ -137,11 +181,31 @@ To call the Lambda proxy instead, replace the original URL with the API Gateway 
 
 An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
-`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/maptile/base/normal.day/13/4400/2686/256`
+`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/maptile/api/base/maptile/2.1/maptile/newest/normal.day/13/4400/2686/256/jpg`
+
+The AWS Lambda Proxy URL depends on the base URL type. For example:
+
+* https://1.traffic.maps.api.here.com/maptile/2.1/traffictile/newest
+
+    Base URL: traffic
+
+    Lambda Proxy URL: /maptile/api/traffic/
+
+* https://1.base.maps.api.here.com/maptile/2.1/streettile
+
+    Base URL: base
+
+    Lambda Proxy URL: /maptile/api/base/
 
 For details please refer [HERE Map Tile API](https://developer.here.com/documentation/map-tile/topics/introduction.html)
 
 ### Places
+
+URL Mapping
+
+|API                  | HERE URL Prefix                                 |  AWS Lambda App URL Prefix |
+|-------------------- |-------------------------------------------------|-----------------------------------------------------------|
+|Places               | `https://places.ls.hereapi.com/`                |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/places/api/` |
 
 An example of an HTTP GET request to HERE API:
 
@@ -151,11 +215,19 @@ To call the Lambda proxy instead, replace the original URL with the API Gateway 
 
 An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
-`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/places?at=40.74917,-73.98529&q=chrysler`
+`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/places/api/places/v1/autosuggest?at=40.74917,-73.98529&q=chrysler`
+
+For details please refer [HERE Places API](https://developer.here.com/documentation/places/topics/introduction.html)
 
 ### Position
 
 Note: The API type is HTTP **POST**. For GET requests, "Missing Authentication Token" response will be returned from AWS as **POST** type request is expected.   
+
+URL Mapping
+
+|API                  | HERE URL Prefix                                 |  AWS Lambda App URL Prefix |
+|-------------------- |-------------------------------------------------|-----------------------------------------------------------|
+|Position             | `https://pos.ls.hereapi.com/`                   |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/position/api/` |
 
 An example of an HTTP POST to HERE API:
 
@@ -163,13 +235,21 @@ An example of an HTTP POST to HERE API:
 
 An example of an HTTP POST to the equivalent AWS Lambda Proxy:
 
-`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/position`
+`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/position/api/positioning/v1/locate`
 
 Sample Payload : { "gsm": [{ "mcc":262,"mnc":1,"lac":5126,"cid":21857 }] }
 
 For details please refer [HERE Positioning API](https://developer.here.com/documentation/positioning/topics/request-first-locate.html)
 
 ### Routing
+
+URL Mapping
+
+|API                  | HERE URL Prefix                                 |  AWS Lambda App URL Prefix |
+|-------------------- |-------------------------------------------------|-----------------------------------------------------------|
+|Routing              | `https://route.ls.hereapi.com/`                 |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/routing/api/route/` |
+|Routing(Isoline)     | `https://isoline.route.ls.hereapi.com/`         |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/routing/api/isoline.route/` |
+|Routing(Matrix)      | `https://matrix.route.ls.hereapi.com/`          |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/routing/api/matrix.route/` |
 
 An example of an HTTP GET request to HERE API:
 
@@ -179,9 +259,37 @@ To call the Lambda proxy instead, replace the original URL with the API Gateway 
 
 An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
-`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/routing?waypoint0=geo!52.5%2c13.4&waypoint1=geo!52.5%2c13.45&mode=fastest%3bcar%3btraffic:disabled%3b`
+`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/routing/api/route/routing/7.2/calculateroute.json?waypoint0=geo!52.5%2c13.4&waypoint1=geo!52.5%2c13.45&mode=fastest%3bcar%3btraffic:disabled%3b`
+
+The AWS Lambda Proxy URL depends on the base URL type. For example:
+
+* 	https://route.ls.hereapi.com/routing/7.2/calculateroute.json
+
+    Base URL: route
+
+    Lambda Proxy URL: /routing/api/route/
+
+* https://isoline.route.ls.hereapi.com/routing/7.2/calculateisoline.json
+
+    Base URL: isoline.route
+
+    Lambda Proxy URL: /routing/api/isoline.route/
+
+* 	https://matrix.route.ls.hereapi.com/routing/7.2/calculatematrix.json
+
+    Base URL: matrix.route
+
+    Lambda Proxy URL: /routing/api/matrix.route/
+
+For details please refer [HERE Routing API](https://developer.here.com/documentation/routing/topics/overview.html)
 
 ### Waypoint Sequence (Routing)
+
+URL Mapping
+
+|API                  | HERE URL Prefix                                 |  AWS Lambda App URL Prefix |
+|-------------------- |-------------------------------------------------|-----------------------------------------------------------|
+|Waypoint             | `https://wse.ls.hereapi.com/`                   |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/waypointseq/api/` |
 
 An example of an HTTP GET request to HERE API:
 
@@ -191,9 +299,17 @@ To call the Lambda proxy instead, replace the original URL with the API Gateway 
 
 An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
-`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/waypointseq?start=WiesbadenCentralStation%3b50.0715%2c8.2434&destination1=FranfurtCentralStation%3b50.1073%2c8.6647&destination2=DarmstadtCentralStation%3b49.8728%2c8.6326&destination3=FrankfurtAirport%3b50.0505%2c8.5698&destination4=HanauCentralStation%3b50.1218%2c8.9298&end=MainzCentralStation%3b50.0021%2c8.259&improveFor=time&mode=fastest%3bcar%3btraffic:disabled%3b`
+`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/waypointseq/api/2/findsequence.json?start=WiesbadenCentralStation%3b50.0715%2c8.2434&destination1=FranfurtCentralStation%3b50.1073%2c8.6647&destination2=DarmstadtCentralStation%3b49.8728%2c8.6326&destination3=FrankfurtAirport%3b50.0505%2c8.5698&destination4=HanauCentralStation%3b50.1218%2c8.9298&end=MainzCentralStation%3b50.0021%2c8.259&improveFor=time&mode=fastest%3bcar%3btraffic:disabled%3b`
+
+For details please refer [HERE Routing Waypoints aka Sequence API](https://developer.here.com/documentation/routing-waypoints/topics/introduction.html)
 
 ### Toll Cost
+
+URL Mapping
+
+|API                  | HERE URL Prefix                                 |  AWS Lambda App URL Prefix |
+|-------------------- |-------------------------------------------------|-----------------------------------------------------------|
+|Toll Cost            | `https://tce.api.here.com/2/calculateroute.json`|  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/tollcost` |
 
 An example of an HTTP GET request to HERE API:
 
@@ -205,7 +321,16 @@ An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
 `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/tollcost?waypoint0=49.33729606975952%2c0.5986232869327068&waypoint1=49.493527937780975%2c0.10129541603788539&mode=fastest%3bcar%26cost_optimize%3d1`
 
+For details please refer [HERE Toll Cost API](https://developer.here.com/documentation/toll-cost/topics/introduction.html)
+
 ### Traffic
+
+URL Mapping
+
+|API                  | HERE URL Prefix                                 |  AWS Lambda App URL Prefix |
+|-------------------- |-------------------------------------------------|-----------------------------------------------------------|
+|Traffic              | `https://traffic.ls.hereapi.com/`               |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/traffic/api/traffic/` |
+|Traffic(tiles)       | `https://{1..4}.traffic.maps.ls.hereapi.com/`   |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/traffic/api/traffic.maps/` |
 
 An example of an HTTP GET request to HERE API:
 
@@ -215,9 +340,31 @@ To call the Lambda proxy instead, replace the original URL with the API Gateway 
 
 An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
-`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/traffic/8/134/86`
+`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/traffic/api/traffic/traffic/6.3/incidents/json/8/218/99`
+
+The AWS Lambda Proxy URL depends on the base URL type. For example:
+
+* https://1.traffic.maps.ls.hereapi.com/traffic/6.0/tiles/8/133/86/256/png32
+
+    Base URL: traffic.maps
+
+    Lambda Proxy URL: /traffic/api/traffic.maps/
+
+* https://traffic.ls.hereapi.com/traffic/6.0/incidents.json
+
+    Base URL: traffic
+
+    Lambda Proxy URL: /traffic/api/traffic/
+
+For details please refer [HERE Traffic API](https://developer.here.com/documentation/traffic/topics/introduction.html)
 
 ### Transit
+
+URL Mapping
+
+|API                  | HERE URL Prefix                                 |  AWS Lambda App URL Prefix |
+|-------------------- |-------------------------------------------------|-----------------------------------------------------------|
+|Transit              | `https://transit.ls.hereapi.com/`               |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/transit/api/` |
 
 An example of an HTTP GET request to HERE API:
 
@@ -227,13 +374,19 @@ To call the Lambda proxy instead, replace the original URL with the API Gateway 
 
 An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
-`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/transit?routing=all&dep=41.9773%2C-87.9019&arr=41.8961%2C-87.6552&time=2019-12-12T07%3A30%3A00`
+`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/transit/api/v3/route.json?routing=all&dep=41.9773%2C-87.9019&arr=41.8961%2C-87.6552&time=2019-12-12T07%3A30%3A00`
 
 For details please refer [Public Transit API](https://developer.here.com/documentation/transit/topics/quick-start-routing.html)
 
-### Weather
+### Weather API
 
 Note: The Weather API is not available by default. Please contact the [here.com Sales Team](https://developer.here.com/contact-us#contact-sales) for more information.
+
+URL Mapping
+
+|API                  | HERE URL Prefix                                 |  AWS Lambda App URL Prefix |
+|-------------------- |-------------------------------------------------|-----------------------------------------------------------|
+|Weather              | `https://weather.ls.hereapi.com/`               |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/weather/api/` |
 
 An example of an HTTP GET request to HERE API:
 
@@ -243,7 +396,9 @@ To call the Lambda proxy instead, replace the original URL with the API Gateway 
 
 An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
-`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/weather?product=observation&name=Berlin-Tegel`
+`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/weather/api/weather/1.0/report.json?product=observation&name=Berlin-Tegel`
+
+For details please refer [HERE Weather API](https://developer.here.com/documentation/weather/topics/overview.html)
 
 ## License
 

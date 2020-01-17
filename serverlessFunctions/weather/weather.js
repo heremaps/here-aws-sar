@@ -21,9 +21,9 @@
 
 'use strict';
 
-const HERE_API = 'https://weather.ls.hereapi.com/weather/1.0/report.json'
-
 const axios = require("axios");
+const HERE_API_URL = "https://weather.ls.hereapi.com";
+const HERE_API_KEY = process.env.HERE_API_KEY;
 let statusCode ='200';
 
 const getData = async url => {
@@ -37,24 +37,25 @@ const getData = async url => {
     }
 };
 
-exports.weatherGET = async(event, context) => {
-    console.log(`>>> process.env.HERE_API_KEY: ${process.env.HERE_API_KEY}`);
-
+exports.weatherGET = async (event, context) => {
+    console.log(`>>> process.env.HERE_API_KEY: ${HERE_API_KEY}`);
+    const resourcePath = event.pathParameters.resourcePath;
     let args = ""
+
     for (let qsp in event.queryStringParameters) {
         let qsa = "&" + qsp + "=" + event['queryStringParameters'][qsp]
         console.log(`>>> QueryStringArg: ${qsa}`)
         args += qsa
     }
 
-    const url = `${HERE_API}?apiKey=${process.env.HERE_API_KEY}` + args;
+    const url = `${HERE_API_URL}/${resourcePath}?apiKey=${HERE_API_KEY}${args}`;
     console.log(`url: ${url}`);
 
     const hlsAPIResponse = await getData(url);
     const response = {
         statusCode: statusCode,
         // headers: { 'Access-Control-Allow-Origin': '*' },
-        body: (statusCode == '200')? JSON.stringify(hlsAPIResponse) : JSON.stringify({"Type ":hlsAPIResponse.response.data.Type , "Message":hlsAPIResponse.response.data.Message})
+        body: (parseInt(statusCode) === 200) ? JSON.stringify(hlsAPIResponse) : JSON.stringify({ "Type ": hlsAPIResponse.response.data.Type, "Message": hlsAPIResponse.response.data.Message })
     };
 
     context.succeed(response);

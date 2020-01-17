@@ -17,7 +17,7 @@ Resources:
           title:
             Ref: AWS::StackName
         paths:
-          "/mapimage":
+          "/mapimage/api/{resourcePath+}":
             get:
               produces:
               - "application/json"
@@ -52,7 +52,7 @@ Resources:
   MapImageFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Runtime: nodejs8.10
+      Runtime: nodejs12.x
       Handler: mapimage.mapimageGET
       Description: 'A lambda function to get access to pre-rendered map images already optimized for desktop and mobile devices.'
       Environment:
@@ -63,7 +63,7 @@ Resources:
         GET:
           Type: Api
           Properties:
-            Path: /mapimage
+            Path: /mapimage/api/{resourcePath+}
             Method: GET
             RestApiId:
               Ref: HereApiMapImageGateway

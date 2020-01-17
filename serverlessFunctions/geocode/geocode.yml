@@ -10,7 +10,7 @@ Resources:
   GeocodeFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
-      Runtime: nodejs8.10
+      Runtime: nodejs12.x
       Handler: geocode.geocodeGET
       Description: 'A Lambda function that converts street addresses to geo-coordinates and vice-versa with geocoding, including landmarks, and reverse geocoding using HERE Location Services.'
       Environment:
@@ -20,23 +20,8 @@ Resources:
         GET:
           Type: Api
           Properties:
-            Path: /geocode/{searchtext}
-            Method: get
-  GeocodeSuggestFunction:
-    Type: 'AWS::Serverless::Function'
-    Properties:
-      Runtime: nodejs8.10
-      Handler: geocodesuggest.geocodesuggestGET
-      Description: 'Correct misspellings and get better suggestions for your address search with fewer keystrokes.'
-      Environment:
-        Variables:
-          HERE_API_KEY: !Ref HereApiKey
-      Events:
-        GET:
-          Type: Api
-          Properties:
-            Path: /geocodesuggest/{query}
-            Method: get
+            Path: /geocode/api/{type}/{resourcePath+}
+            Method: any
 Outputs:
   HereApiURL:
     Description: "AWS API Gateway URL for HERE GeoCode & GeoCode Suggest (aka autocomplete) API."

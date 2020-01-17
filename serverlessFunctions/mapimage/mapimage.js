@@ -22,9 +22,9 @@
 'use strict';
 const axios = require("axios");
 const fs = require('fs');
-const HERE_API = "https://image.maps.ls.hereapi.com/mia/1.6/mapview";
+const HERE_API_URL = "https://image.maps.ls.hereapi.com";
 const HERE_API_KEY = process.env.HERE_API_KEY;
-let statusCode,result;
+let statusCode, result;
 
 const postProcessResource = async(resource, readFile) => {
     let ret = null;
@@ -74,7 +74,7 @@ const download = async (url, filename) => {
 
 exports.mapimageGET = async(event, context) => {
     console.log(`>>> HERE_API_KEY: ${HERE_API_KEY}`);
-    console.log(`>>> event:\r\n${JSON.stringify(event)}`);
+    const resourcePath = event.params.path.resourcePath;
 
     let args = ""
     for (let qsp in event.params.querystring) {
@@ -84,16 +84,15 @@ exports.mapimageGET = async(event, context) => {
     }
 
     const filename = "/tmp/mapview.png";
-    const url = `${HERE_API}?apiKey=${HERE_API_KEY}${args}`;
+    const url = `${HERE_API_URL}/${resourcePath}?apiKey=${HERE_API_KEY}${args}`;
     console.log(`>> url: ${url}`);
 
     await download(url, filename);
 
-    if(statusCode == "200") {
+    if (parseInt(statusCode) === 200) {
         result = await postProcessResource(filename, (file) => new Buffer(fs.readFileSync(file)).toString('base64'));
         context.succeed(result);
-    }
-    else {
+    } else {
         context.fail('error in downloading map.');
     }
 };

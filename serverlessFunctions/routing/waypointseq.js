@@ -21,9 +21,9 @@
 
 'use strict';
 
-const HERE_API = 'https://wse.ls.hereapi.com/2/findsequence.json'
-
 const axios = require("axios");
+const HERE_API_URL = 'https://wse.ls.hereapi.com';
+const HERE_API_KEY = process.env.HERE_API_KEY;
 let statusCode = '200';
 
 const getData = async url => {
@@ -33,31 +33,30 @@ const getData = async url => {
         return response.data;
     } catch (error) {
         statusCode = error.response.status;
-        console.log('error:'+error.response.data.errors);
-        // console.log('error statusCode:'+error.response.data.responseCode);
         return error;
     }
 };
 
 
 exports.waypointseqGET = async (event, context) => {
-    console.log(`>>> process.env.HERE_API_KEY: ${process.env.HERE_API_KEY}`);
+    console.log(`>>> process.env.HERE_API_KEY: ${HERE_API_KEY}`);
+    const resourcePath = event.pathParameters.resourcePath;
+    let args = ""
 
-    let args = "";
     for (let qsp in event.queryStringParameters) {
         let qsa = "&" + qsp + "=" + event['queryStringParameters'][qsp];
         console.log(`>>> QueryStringArg: ${qsa}`);
         args += qsa;
     }
 
-    const url = `${HERE_API}?apiKey=${process.env.HERE_API_KEY}` + args;
+    const url = `${HERE_API_URL}/${resourcePath}?apiKey=${HERE_API_KEY}${args}`;
     console.log(`>>> url: ${url}`);
 
     const hlsAPIResponse = await getData(url);
 
     const response = {
         statusCode: `${statusCode}`,
-        body: (statusCode == '200')? JSON.stringify(hlsAPIResponse) : JSON.stringify({ 'message':hlsAPIResponse.response.data.errors.toString() })
+        body: (parseInt(statusCode) === 200)? JSON.stringify(hlsAPIResponse) : JSON.stringify({ 'message':hlsAPIResponse.response.data.errors.toString() })
     };
 
     context.succeed(response);

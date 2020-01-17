@@ -21,9 +21,9 @@
 
 'use strict';
 
-const HERE_API = 'https://places.ls.hereapi.com/places/v1/autosuggest'
-
 const axios = require("axios");
+const HERE_API_URL = "https://places.ls.hereapi.com";
+const HERE_API_KEY = process.env.HERE_API_KEY;
 let statusCode = '200';
 
 const getData = async url => {
@@ -38,16 +38,17 @@ const getData = async url => {
 };
 
 exports.placesGET = async (event, context) => {
-    console.log(`>>> process.env.HERE_API_KEY: ${process.env.HERE_API_KEY}`);
-
+    console.log(`>>> process.env.HERE_API_KEY: ${HERE_API_KEY}`);
+    const resourcePath = event.pathParameters.resourcePath;
     let args = ""
+
     for (let qsp in event.queryStringParameters) {
         let qsa = "&" + qsp + "=" + event['queryStringParameters'][qsp]
         console.log(`>>> QueryStringArg: ${qsa}` )
         args += qsa
     }
 
-    const url = `${HERE_API}?apiKey=${process.env.HERE_API_KEY}` + args;
+    const url = `${HERE_API_URL}/${resourcePath}?apiKey=${process.env.HERE_API_KEY}${args}`;
     console.log(`>>> url: ${url}`);
 
     const hlsAPIResponse = await getData(url);
@@ -55,7 +56,7 @@ exports.placesGET = async (event, context) => {
     const response = {
         statusCode: statusCode,
         // headers: { 'Access-Control-Allow-Origin': '*' },
-        body: (statusCode == '200')? JSON.stringify(hlsAPIResponse) : JSON.stringify({'message' : hlsAPIResponse.response.data.message })
+        body: (parseInt(statusCode) === 200)? JSON.stringify(hlsAPIResponse) : JSON.stringify({'message' : hlsAPIResponse.response.data.message })
     };
 
     context.succeed(response);

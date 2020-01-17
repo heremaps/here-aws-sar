@@ -22,39 +22,64 @@
 'use strict';
 
 const axios = require("axios");
-
-const HERE_API_URL = 'https://geocoder.ls.hereapi.com/6.2/geocode.json';
 const HERE_API_KEY = process.env.HERE_API_KEY;
 let statusCode = '200';
 
-const getData = async url => {
+const getData = async (url, apiMethod, postData) => {
+    let response = '';
+
     try {
-        const response = await axios.get(url);
+        if (apiMethod === 'POST') {
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': '*',
+                    'Cache-Control': 'no-cache'
+                }
+            };
+
+            response = await axios.post(url, postData, options);
+        } else {
+            response = await axios.get(url);
+        }
+
         statusCode = response.status;
         return response.data;
     } catch (error) {
         statusCode = error.response.status;
-        console.log('error:'+error.response.data.Details);
         return error;
     }
 };
 
 exports.geocodeGET = async (event, context) => {
-    console.log(`>>> HERE_API: ${HERE_API_URL}`);
     console.log(`>>> HERE_API_KEY: ${HERE_API_KEY}`);
+    let apiMethod = "GET";
+    let postData = "";
+    let args = "";
+    for (let qsp in event.queryStringParameters) {
+        let qsa = "&" + qsp + "=" + event['queryStringParameters'][qsp];
+        console.log(`>>> QueryStringArg: ${qsa}`);
+        args += qsa;
+    }
 
-    const searchtext = event.pathParameters.searchtext;
-    console.log(`>>> searchtext: ${searchtext}`);
+    const type = event.pathParameters.type;
+    const resourcePath = event.pathParameters.resourcePath;
 
-    const url = `${HERE_API_URL}?apiKey=${HERE_API_KEY}&searchtext=${searchtext}`;
+    const HERE_API_URL = `https://${type}.ls.hereapi.com/${resourcePath}`;
+    const url = `${HERE_API_URL}?apiKey=${HERE_API_KEY}${args}`;
     console.log(`>>> url: ${url}`);
 
-    const hlsAPIResponse = await getData(url);
+    if (url.indexOf("multi-reversegeocode") > 0) {
+        apiMethod = "POST";
+        postData = event.body;
+    }
+
+    const hlsAPIResponse = await getData(url, apiMethod, postData);
 
     const response = {
         statusCode: statusCode,
         // headers: { 'Access-Control-Allow-Origin': '*' },
-        body: (statusCode == '200')? JSON.stringify(hlsAPIResponse) : JSON.stringify({ 'message' : hlsAPIResponse.response.data.Details })
+        body: (parseInt(statusCode) === 200)? JSON.stringify(hlsAPIResponse) : JSON.stringify({ 'message' : hlsAPIResponse.response.data.Details })
     };
 
     context.succeed(response);

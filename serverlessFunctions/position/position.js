@@ -22,11 +22,11 @@
 'use strict';
 
 const axios = require("axios");
-const HERE_API = 'https://pos.ls.hereapi.com/positioning/v1/locate';
+const HERE_API_URL = "https://pos.ls.hereapi.com";
+const HERE_API_KEY = process.env.HERE_API_KEY;
 let statusCode ='200';
 
-const loadPositionInfo = async postData => {
-    const url = `${HERE_API}?apiKey=${process.env.HERE_API_KEY}`;
+const loadPositionInfo = async (postData, url) => {
     const options = {
         method: 'POST',
         headers: {
@@ -47,16 +47,26 @@ const loadPositionInfo = async postData => {
 };
 
 exports.positionPOST = async(event, context) => {
-    console.log(`>>> process.env.HERE_API_KEY: ${process.env.HERE_API_KEY}`);
+    console.log(`>>> process.env.HERE_API_KEY: ${HERE_API_KEY}`);
+    const resourcePath = event.pathParameters.resourcePath;
+    let args = ""
+
+    for (let qsp in event.queryStringParameters) {
+        let qsa = "&" + qsp + "=" + event['queryStringParameters'][qsp]
+        console.log(`>>> QueryStringArg: ${qsa}`)
+        args += qsa
+    }
+
+    const url = `${HERE_API_URL}/${resourcePath}?apiKey=${HERE_API_KEY}${args}`;
 
     const postData = event.body;
     console.log(`>>> incoming HTTP POST contents:\r\n${postData}`);
 
-    const hlsAPIResponse = await loadPositionInfo(postData);
+    const hlsAPIResponse = await loadPositionInfo(postData, url);
 
     const response = {
         statusCode: statusCode,
-        body: (statusCode == '200')? JSON.stringify(hlsAPIResponse) : JSON.stringify({"error ":hlsAPIResponse.response.data.error})
+        body: (parseInt(statusCode) === 200)? JSON.stringify(hlsAPIResponse) : JSON.stringify({"error ":hlsAPIResponse.response.data.error})
     };
     context.succeed(response);
 };

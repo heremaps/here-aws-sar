@@ -17,7 +17,7 @@ Resources:
           title:
             Ref: AWS::StackName
         paths:
-          "/maptile/{type}/{scheme}/{zoomlevel}/{col}/{row}/{rez}":
+          "/maptile/api/{type}/{resourcePath+}":
             get:
               produces:
               - "application/json"
@@ -53,7 +53,7 @@ Resources:
   MapTileFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Runtime: nodejs8.10
+      Runtime: nodejs12.x
       Handler: maptile.maptileGET
       Description: 'A lambda function to show fresh day-time map tiles in multiple styles (e.g. base, aerial) including rendered live-traffic tiles for flow overlay.'
       Environment:
@@ -64,7 +64,7 @@ Resources:
         GET:
           Type: Api
           Properties:
-            Path: /maptile/{type}/{scheme}/{zoomlevel}/{col}/{row}/{rez}
+            Path: /maptile/api/{type}/{resourcePath+}
             Method: GET
             RestApiId:
               Ref: HereApiMapTileGateway

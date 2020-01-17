@@ -13,7 +13,7 @@ Resources:
   TollCostFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
-      Runtime: nodejs8.10
+      Runtime: nodejs12.x
       Handler: tollcost.tollcostGET
       Description: 'A Lambda function that Calculate the toll costs for any HERE route while taking into account various vehicle profiles, or get the cost-optimized route based on toll and vehicle costs.'
       Environment:

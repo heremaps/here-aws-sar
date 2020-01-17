@@ -21,9 +21,8 @@
 
 'use strict';
 
-const HERE_API = 'https://traffic.ls.hereapi.com/traffic/6.3/incidents/json';
-
 const axios = require("axios");
+const HERE_API_KEY = process.env.HERE_API_KEY;
 let statusCode ='200';
 
 const getData = async url => {
@@ -38,10 +37,22 @@ const getData = async url => {
 };
 
 exports.trafficGET = async(event, context) => {
-    console.log(`>>> process.env.HERE_API_KEY: ${process.env.HERE_API_KEY}`);
+    console.log(`>>> process.env.HERE_API_KEY: ${HERE_API_KEY}`);
+    const type = event.pathParameters.type;
+    const resourcePath = event.pathParameters.resourcePath;
+    let args = ""
 
+    for (let qsp in event.queryStringParameters) {
+        let qsa = "&" + qsp + "=" + event['queryStringParameters'][qsp]
+        console.log(`>>> QueryStringArg: ${qsa}`)
+        args += qsa
+    }
 
-    const url = `${HERE_API}/${event.pathParameters.A}/${event.pathParameters.B}/${event.pathParameters.C}?apiKey=${process.env.HERE_API_KEY}`;
+    const HERE_API_URL = (type.indexOf('.') > 0)
+        ? `https://1.${type}.ls.hereapi.com/${resourcePath}`
+        : `https://${type}.ls.hereapi.com/${resourcePath}`
+
+    const url = `${HERE_API_URL}?apiKey=${HERE_API_KEY}${args}`;
     console.log(`url: ${url}`);
 
     const hlsAPIResponse = await getData(url);
@@ -49,7 +60,7 @@ exports.trafficGET = async(event, context) => {
     const response = {
         statusCode: statusCode,
         // headers: { 'Access-Control-Allow-Origin': '*' },
-        body: (statusCode == '200')? JSON.stringify(hlsAPIResponse) :JSON.stringify({"Details":hlsAPIResponse.response.data.Details , "AdditionalData":hlsAPIResponse.response.data.AdditionalData ,
+        body: (parseInt(statusCode) === 200)? JSON.stringify(hlsAPIResponse) :JSON.stringify({"Details":hlsAPIResponse.response.data.Details , "AdditionalData":hlsAPIResponse.response.data.AdditionalData ,
             "type":hlsAPIResponse.response.data.type ,"subtype":hlsAPIResponse.response.data.subtype})
     };
     context.succeed(response);

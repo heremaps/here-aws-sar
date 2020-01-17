@@ -20,10 +20,8 @@
 // https://developer.here.com/documentation/routing/topics/overview.html
 
 'use strict';
-
-const HERE_API = 'https://route.ls.hereapi.com/routing/7.2/calculateroute.json'
-
 const axios = require("axios");
+const HERE_API_KEY = process.env.HERE_API_KEY;
 let statusCode = '200';
 
 const getData = async url => {
@@ -33,13 +31,12 @@ const getData = async url => {
         return response.data;
     } catch (error) {
         statusCode = error.response.status;
-        // console.log('RESP:'+JSON.stringify(error.response.data));
         return error;
     }
 };
 
 exports.routingGET = async (event, context) => {
-    console.log(`>>> process.env.HERE_API_URL: ${process.env.HERE_API_URL}`);
+    console.log(`>>> HERE_API_KEY: ${HERE_API_KEY}`);
 
     let args = "";
     for (let qsp in event.queryStringParameters) {
@@ -48,15 +45,18 @@ exports.routingGET = async (event, context) => {
         args += qsa
     }
 
-    const url = `${HERE_API}?apiKey=${process.env.HERE_API_KEY}` + args;
-    console.log(`>>> url: ${url}`);
+    const type = event.pathParameters.type;
+    const resourcePath = event.pathParameters.resourcePath;
+
+    const HERE_API_URL = `https://${type}.ls.hereapi.com/${resourcePath}`;
+    const url = `${HERE_API_URL}?apiKey=${HERE_API_KEY}${args}`;
 
     const hlsAPIResponse = await getData(url);
 
     const response = {
         statusCode: statusCode,
         // headers: { 'Access-Control-Allow-Origin': '*' },
-        body: (statusCode == '200')? JSON.stringify(hlsAPIResponse) : JSON.stringify({"type":hlsAPIResponse.response.data.type,"subtype":hlsAPIResponse.response.data.subtype,
+        body: (parseInt(statusCode) === 200)? JSON.stringify(hlsAPIResponse) : JSON.stringify({"type":hlsAPIResponse.response.data.type,"subtype":hlsAPIResponse.response.data.subtype,
             "details":hlsAPIResponse.response.data.details})
     };
 

@@ -10,7 +10,7 @@ Resources:
   PlacesFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
-      Runtime: nodejs8.10
+      Runtime: nodejs12.x
       Handler: places.placesGET
       Description: 'A lambda function to find (e.g., search for name, type, category), discover (e.g., look into address, contact info) and interact with POI information (e.g., enable user reviews, photos).'
       Environment:
@@ -20,7 +20,7 @@ Resources:
         GET:
           Type: Api
           Properties:
-            Path: /places
+            Path: /places/api/{resourcePath+}
             Method: get
 Outputs:
   HereApiURL:
