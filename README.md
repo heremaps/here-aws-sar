@@ -60,6 +60,10 @@ Use the AWS CLI to package (note the folder layout):
 
 Use the AWS CLI to deploy the AWS SAM package using CloudFormation:
 
+`x:\src\here-aws-repository\serverlessFunctions>aws cloudformation deploy --capabilities CAPABILITY_IAM --stack-name "HERE-Maps-API--GeoCode" --parameter-overrides HereApiKey=<apiKey> --template-file geocode-packaged.yml`
+
+Note: If any API is still using HereAppId and HereAppCode like Tollcost then use below deploy command.
+
 `x:\src\here-aws-repository\serverlessFunctions>aws cloudformation deploy --capabilities CAPABILITY_IAM --stack-name "HERE-Maps-API--GeoCode" --parameter-overrides HereAppId=<appID> HereAppCode=<appCode> --template-file geocode-packaged.yml`
 
 ### Step 7: Find new API Gateway URL
