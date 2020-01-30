@@ -123,7 +123,7 @@ To call the Lambda proxy instead, replace the original URL with the API Gateway 
 
 An example of an HTTP GET request to the equivalent AWS Lambda Proxy:
 
-`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocodesuggest/api/6.2/suggest.json?query={query}`
+`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/autocomplete.geocoder/6.2/suggest.json?query={query}`
 
 The AWS Lambda Proxy URL depends on the base URL type. For example:
 
