@@ -1,15 +1,24 @@
-# AWS SAM for HERE Location Service APIs - Geocoder
+# AWS SAR for HERE Location Service APIs - Geocoding and Search API v7
 ## Introduction
-This project provides [AWS Lambda](https://aws.amazon.com/lambda/) as __proxy__ for [HERE Geocode API](https://developer.here.com/documentation/geocoder/topics/introduction.html) & [HERE Geocode Autocomplete API](https://developer.here.com/documentation/geocoder-autocomplete/topics/introduction.html). This AWS Lambda is packaged as per the [AWS Serverless Application Model](https://aws.amazon.com/about-aws/whats-new/2016/11/introducing-the-aws-serverless-application-model/).
+This project provides [AWS Lambda](https://aws.amazon.com/lambda/) as __proxy__ for [HERE Geocoding and Search API v7](https://developer.here.com/documentation/geocoding-search-api/dev_guide/index.html) & This AWS Lambda is packaged as per the [AWS Serverless Application Model](https://aws.amazon.com/about-aws/whats-new/2016/11/introducing-the-aws-serverless-application-model/).
 
-"AWS SAM is natively supported by AWS CloudFormation and defines simplified syntax for expressing serverless resources. The specification currently covers APIs, Lambda functions and Amazon DynamoDB tables."
+"AWS SAR is natively supported by AWS CloudFormation and defines simplified syntax for expressing serverless resources. The specification currently covers APIs, Lambda functions and Amazon DynamoDB tables."
 
 ### Benefits
 
 The AWS API Gateway supports configuring both Cache and Throttling, and the lambdas are open source: we welcome pull requests with circuit breakers, graceful error handling, etc.!
 
 ## Requirements
-To successfully call the [HERE Geocode API](https://developer.here.com/documentation/geocoder/topics/introduction.html) & [HERE Geocode Autocomplete API](https://developer.here.com/documentation/geocoder-autocomplete/topics/introduction.html) through the proxy in this project, you need to obtain HERE API credentials. Multiple plans are available: https://aws.amazon.com/marketplace/pp/B07JPLG9SR/?ref=_ptnr_aws_sar_github#pricing-information.
+To successfully call the [HERE Geocoding and Search API v7](https://developer.here.com/documentation/geocoding-search-api/dev_guide/index.html) through the proxy in this project, you need to obtain HERE API credentials. Multiple plans are available: https://aws.amazon.com/marketplace/pp/B07JPLG9SR/?ref=_ptnr_aws_sar_github#pricing-information.
+
+## List of APIs with AWS Lambda Proxies
+* [Geocoding and Search API v7](https://developer.here.com/documentation/geocoding-search-api/dev_guide/index.html)
+* [Discover](https://developer.here.com/documentation/geocoding-search-api/dev_guide/topics/endpoint-discover-brief.html)
+ * [Geocode](https://developer.here.com/documentation/geocoding-search-api/dev_guide/topics/endpoint-geocode-brief.html)
+ * [Autosuggest](https://developer.here.com/documentation/geocoding-search-api/dev_guide/topics/endpoint-autosuggest-brief.html)
+ * [Browse](https://developer.here.com/documentation/geocoding-search-api/dev_guide/topics/endpoint-browse-brief.html)
+ * [Lookup](https://developer.here.com/documentation/geocoding-search-api/dev_guide/topics/endpoint-lookup-brief.html)
+* [Reversegeocode](https://developer.here.com/documentation/geocoding-search-api/dev_guide/topics/endpoint-reverse-geocode-brief.html)
 
 ## Setup
 ### Step 1: Register for an API Key
@@ -32,9 +41,9 @@ The folder containing the lambda source code (JS) and CloudFormation templates (
 
 ### Step 5: Package
 
-An S3 bucket is required as a destination for the AWS SAM package. If you don't have one already, create one:
+An S3 bucket is required as a destination for the AWS SAR package. If you don't have one already, create one:
 
-`aws s3 mb s3://here-maps-api--aws-sam`
+`aws s3 mb s3://here-maps-api--aws-sar`
 
 Note: If the folder contains a `package.json` file: run `npm update`:
 
@@ -42,13 +51,13 @@ Note: If the folder contains a `package.json` file: run `npm update`:
 
 Use the AWS CLI to package (note the folder layout):
 
-`x:\src\here-aws-repository\serverlessFunctions>aws cloudformation package --s3-bucket here-maps-api--aws-sam --template-file geocode\geocode.yml --output-template-file geocode-packaged.yml`
+`x:\src\here-aws-repository\serverlessFunctions>aws cloudformation package --s3-bucket here-maps-api--aws-sar --template-file geocode\geocode.yml --output-template-file geocode-packaged.yml`
 
 ### Step 6: Deploy
 
-Use the AWS CLI to deploy the AWS SAM package using CloudFormation:
+Use the AWS CLI to deploy the AWS SAR package using CloudFormation:
 
-`x:\src\here-aws-repository\serverlessFunctions>aws cloudformation deploy --capabilities CAPABILITY_IAM --stack-name "HERE-Maps-API--GeoCode" --parameter-overrides HereApiKey=<apiKey> --template-file geocode-packaged.yml`
+`x:\src\here-aws-repository\serverlessFunctions>aws cloudformation deploy --capabilities CAPABILITY_IAM --stack-name "HERE-Maps-API--GeoCodev" --parameter-overrides HereApiKey=<apiKey> --template-file geocode-packaged.yml`
 
 ### Step 7: Find new API Gateway URL
 
@@ -70,103 +79,143 @@ For guidance, see the [AWS Lambda FAQ](https://aws.amazon.com/lambda/faqs/#secur
 
 Consider implementing [AWS API Gateway Custom Authorizers](http://docs.aws.amazon.com/apigateway/latest/developerguide/use-custom-authorizer.html).
 
-## HERE Maps API with Lambda Proxy
+## HERE Geocoding and Search API v7 with Lambda Proxy
 URL Mapping
 
 |API                  | HERE URL Prefix                                 |  AWS Lambda App URL Prefix |
 |-------------------- |-------------------------------------------------|-----------------------------------------------------------|
-|GeoCoder             | `https://geocoder.ls.hereapi.com/`              |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/geocoder/` |
-|GeoCoder             | `https://reverse.geocoder.ls.hereapi.com/`      |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/reverse.geocoder/` |GeoCode AutoComplete | `https://autocomplete.geocoder.ls.hereapi.com/` |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/autocomplete.geocoder` |
+|Geocoding-Search-discover             | `https://discover.search.hereapi.com/`              |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/` |
+|Geocoding-Search-geocode            | `https://geocode.search.hereapi.com/`      |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/` |
+|Geocoding-Search-autosuggest            | `https://autosuggest.search.hereapi.com/`      |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/` |
+|Geocoding-Search-browse            | `https://browse.search.hereapi.com/`      |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/` |
+|Geocoding-Search-lookup            | `https://lookup.search.hereapi.com/`      |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/` |
+|Geocoding-Search-revgeocode            | `https://revgeocode.search.hereapi.com/`      |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/` |
 
-* An example of an HTTP GET request to HERE Geocoder API & equivalent AWS Lambda Proxy:
+* An example of an HTTP GET request to HERE Geocoding-Search-Api V7 & equivalent AWS Lambda Proxy:
 
-    __HERE Geocoder API:__
+    __HERE Geocoding and Search API v7:__
 
-    `https://geocoder.ls.hereapi.com/6.2/geocode.json?apiKey=<apiKey>&searchtext=200 S Mathilda Sunnyvale CA`
+    Type:`discover`
 
-    To call the Lambda proxy instead, replace the original URL with the API Gateway URL, change the type, resourcePath and Query String Parameters as follows:
+   `https://discover.search.hereapi.com/v1/discover?apikey=<apikey>&at=42.36399,-71.05493&limit=1&q=restaurant&in=countryCode:USA`
 
-    __Equivalent AWS Lambda Proxy for HERE Geocoder API:__
+    Type:`geocode`
 
-    API Gateway URL format:
+   `https://geocode.search.hereapi.com/v1/geocode?apikey=<apikey>&q=5 Rue Daunou, 75000 Paris, France`
 
-    `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/{type}/{resourcePath+}`
+    Type:`autosuggest`
 
-    {type}: `geocoder`
+   `https://autosuggest.search.hereapi.com/v1/autosuggest?apikey=<apikey>&at=52.5199813,13.3985138&q=berlin bran`
 
-    {resourcePath+}: `6.2/geocode.json?searchtext=200 S Mathilda Sunnyvale CA`
+    Type:`browse`
 
-    API Gateway URL:
+   `https://browse.search.hereapi.com/v1/browse?apikey=<apikey>&at=-23.000813,-43.351629&limit=2&categories=100-1100,200-2000-0011,100-1000`
 
-    `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/geocoder/6.2/geocode.json?searchtext=200 S Mathilda Sunnyvale CA`
+    Type:`lookup`
 
-* An example of an HTTP GET request to HERE GeoCode AutoComplete API & equivalent AWS Lambda Proxy:
+   `https://lookup.search.hereapi.com/v1/lookup?apikey=<apikey>& id=here:pds:place:276u0vhj-b0bace6448ae4b0fbc1d5e323998a7d2`
 
-    __HERE GeoCode AutoComplete API:__
+    Type:`revgeocode`
 
-    `https://autocomplete.geocoder.ls.hereapi.com/6.2/suggest.json?apiKey=<apiKey>&query={query}`
-
-    To call the Lambda proxy instead, replace the original URL with the API Gateway URL, change the type, resourcePath and Query String Parameters as follows:
-
-    __Equivalent AWS Lambda Proxy for HERE GeoCode AutoComplete API:__
-
-    API Gateway URL format:
-
-    `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/{type}/{resourcePath+}`
-
-    {type}: `autocomplete.geocoder`
-
-    {resourcePath+}: `6.2/suggest.json?query={query}`
-
-    API Gateway URL:
-
-    `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/autocomplete.geocoder/6.2/suggest.json?query={query}`
-
-* An example of an HTTP GET request to HERE Reverse Geocoder API & equivalent AWS Lambda Proxy:
-
-    __HERE Reverse Geocoder API:__
-
-    `https://reverse.geocoder.ls.hereapi.com/6.2/reversegeocode.json?apiKey=<apiKey>&prox=41.8842,-87.6388,250&mode=retrieveAddresses&maxresults=1&gen=9`
+   `https://revgeocode.search.hereapi.com/v1/revgeocode?apikey=<apikey>&at=48.2181679%2C16.3899064&lang=en-US`
 
     To call the Lambda proxy instead, replace the original URL with the API Gateway URL, change the type, resourcePath and Query String Parameters as follows:
 
-    __Equivalent AWS Lambda Proxy for HERE Reverse Geocoder API:__
+    __Equivalent AWS Lambda Proxy for HERE Geocoding and Search API v7 :__
+    
+    Type:`discover`
 
     API Gateway URL format:
 
-    `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/{type}/{resourcePath+}`
+   `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/{resourcePath+}`
 
-    {type}: `reverse.geocoder`
-
-    {resourcePath+}: `6.2/reversegeocode.json?prox=41.8842,-87.6388,250&mode=retrieveAddresses&maxresults=1&gen=9`
+    {resourcePath+}: `v1/discover?at=42.36399,-71.05493&limit=1&q=restaurant&in=countryCode:USA`
 
     API Gateway URL:
+   `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/v1/discover?at=42.36399,-71.05493&limit=1&  q=restaurant&in=countryCode:USA`
 
-    `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/reverse.geocoder/6.2/reversegeocode.json?prox=41.8842,-87.6388,250&mode=retrieveAddresses&maxresults=1&gen=9`
+
+    Type:`geocode`
+
+    API Gateway URL format:
+    `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/{resourcePath+}`
+
+    {resourcePath+}: `v1/geocode?q=5 Rue Daunou, 75000 Paris, France`
+
+    API Gateway URL:
+   `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/v1/geocode?q=5 Rue Daunou, 75000 Paris, France`
+
+   Type:`autosuggest`
+
+    API Gateway URL format:
+    `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/{resourcePath+}`
+
+    {resourcePath+}: `v1/autosuggest?at=52.5199813,13.3985138&q=berlin bran`
+
+    API Gateway URL:
+   `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/v1/autosuggest?at=52.5199813,13.3985138&q=berlin bran`
+
+    Type:`browse`
+
+    API Gateway URL format:
+    `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/{resourcePath+}`
+
+    {resourcePath+}: `v1/browse?at=-23.000813,-43.351629&limit=2&categories=100-1100,200-2000-0011,100-1000`
+
+    API Gateway URL:
+   `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/v1/browse?at=42.36399,-71.05493&limit=1&q=restaurant&in=countryCode:USA`
+
+    Type:`lookup`
+
+    API Gateway URL format:
+    `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/{resourcePath+}`
+
+    {resourcePath+}: `v1/lookup?id=here:pds:place:276u0vhj-b0bace6448ae4b0fbc1d5e323998a7d2`
+
+    API Gateway URL:
+   `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/v1/lookup?at=42.36399,-71.05493&limit=1&q=restaurant&in=countryCode:USA`
+
+    Type:`revgeocode`
+
+    API Gateway URL format:
+    `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/{resourcePath+}`
+
+    {resourcePath+}: `v1/revgeocode?at=42.36399,-71.05493&limit=1&q=restaurant&in=countryCode:USA`
+
+    API Gateway URL:
+   `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/geocode/api/v1/revgeocode?at=48.2181679%2C16.3899064&lang=en-US`
+
 
 The AWS Lambda Proxy URL depends on the base URL type. For example:
 
-* https://geocoder.ls.hereapi.com/6.2/geocode.json
+* https://discover.search.hereapi.com/v1/discover
 
-    Base URL/type: geocoder
+   Lambda Proxy URL: /geocode/api/v1/discover/
 
-    Lambda Proxy URL: /geocode/api/geocoder/
+* https://autosuggest.search.hereapi.com/v1/autosuggest
 
-* https://reverse.geocoder.ls.hereapi.com/6.2/multi-reversegeocode.json
+    Lambda Proxy URL: /geocode/api/v1/autosuggest/
 
-    Base URL/type: reverse.geocoder
+* https://geocode.search.hereapi.com/v1/geocode
 
-    Lambda Proxy URL: /geocode/api/reverse.geocoder/
+    Lambda Proxy URL: /geocode/api/v1/geocode/
 
-* https://autocomplete.geocoder.ls.hereapi.com/6.2/suggest.json
+* https://browse.search.hereapi.com/v1/browse
 
-    Base URL/type: autocomplete.geocoder
+    Lambda Proxy URL: /geocode/api/v1/browse/
 
-    Lambda Proxy URL: /geocode/api/autocomplete.geocoder/
+* https://lookup.search.hereapi.com/v1/lookup
 
-`Note: You also need to provide the Method type as GET or POST for the API call.`
+   Lambda Proxy URL: /geocode/api/v1/lookup/
 
-For details please refer [HERE Geocode API](https://developer.here.com/documentation/geocoder/topics/introduction.html) & [HERE Geocode Autocomplete API](https://developer.here.com/documentation/geocoder-autocomplete/topics/introduction.html)
+ * https://revgeocode.search.hereapi.com/v1/revgeocode
+
+   Lambda Proxy URL: /geocode/api/v1/revgeocode/
+
+
+`Note: You also need to provide the Method type as GET for the API call.`
+
+For details please refer [HERE Geocoding and Search API v7](https://developer.here.com/documentation/geocoding-search-api/dev_guide/index.html) 
 
 ## License
 

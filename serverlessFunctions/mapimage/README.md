@@ -1,8 +1,8 @@
-# AWS SAM for HERE Location Service APIs - Map Image
+# AWS SAR for HERE Location Service APIs - Map Image
 ## Introduction
 This project provides [AWS Lambda](https://aws.amazon.com/lambda/) as __proxy__ for [HERE Map Image API](https://developer.here.com/documentation/map-image/topics/introduction.html). This AWS Lambda is packaged as per the [AWS Serverless Application Model](https://aws.amazon.com/about-aws/whats-new/2016/11/introducing-the-aws-serverless-application-model/).
 
-"AWS SAM is natively supported by AWS CloudFormation and defines simplified syntax for expressing serverless resources. The specification currently covers APIs, Lambda functions and Amazon DynamoDB tables."
+"AWS SAR is natively supported by AWS CloudFormation and defines simplified syntax for expressing serverless resources. The specification currently covers APIs, Lambda functions and Amazon DynamoDB tables."
 
 ### Benefits
 
@@ -32,9 +32,9 @@ The folder containing the lambda source code (JS) and CloudFormation templates (
 
 ### Step 5: Package
 
-An S3 bucket is required as a destination for the AWS SAM package. If you don't have one already, create one:
+An S3 bucket is required as a destination for the AWS SAR package. If you don't have one already, create one:
 
-`aws s3 mb s3://here-maps-api--aws-sam`
+`aws s3 mb s3://here-maps-api--aws-sar`
 
 Note: If the folder contains a `package.json` file: run `npm update`:
 
@@ -42,11 +42,11 @@ Note: If the folder contains a `package.json` file: run `npm update`:
 
 Use the AWS CLI to package (note the folder layout):
 
-`x:\src\here-aws-repository\serverlessFunctions>aws cloudformation package --s3-bucket here-maps-api--aws-sam --template-file mapimage\mapimage.yml --output-template-file mapimage-packaged.yml`
+`x:\src\here-aws-repository\serverlessFunctions>aws cloudformation package --s3-bucket here-maps-api--aws-sar --template-file mapimage\mapimage.yml --output-template-file mapimage-packaged.yml`
 
 ### Step 6: Deploy
 
-Use the AWS CLI to deploy the AWS SAM package using CloudFormation:
+Use the AWS CLI to deploy the AWS SAR package using CloudFormation:
 
 `x:\src\here-aws-repository\serverlessFunctions>aws cloudformation deploy --capabilities CAPABILITY_IAM --stack-name "HERE-Maps-API--MapImage" --parameter-overrides HereApiKey=<apiKey> --template-file mapimage-packaged.yml`
 

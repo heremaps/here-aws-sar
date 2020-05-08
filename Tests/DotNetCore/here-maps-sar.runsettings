@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <RunSettings>
   <TestRunParameters>
-    <Parameter name="HereApi-ApiKey" value="myApiKey"/>
+    <Parameter name="HereApi-AppID" value="myAppID"/>
+    <Parameter name="HereApi-AppCode" value="myAppCode"/>
     <Parameter name="AwsApiGateway-GeoCoder" value="https://myapigateway.execute-api.myregion.amazonaws.com/Stage"/>
   </TestRunParameters>
 </RunSettings>

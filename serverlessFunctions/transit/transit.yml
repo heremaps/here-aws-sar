@@ -20,7 +20,7 @@ Resources:
         GET:
           Type: Api
           Properties:
-            Path: /transit/api/{resourcePath+}
+            Path: /transit/api/{type}/{resourcePath+}
             Method: get
 Outputs:
   HereApiURL:

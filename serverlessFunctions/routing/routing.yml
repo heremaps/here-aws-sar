@@ -37,8 +37,23 @@ Resources:
           Properties:
             Path: /waypointseq/api/{resourcePath+}
             Method: get
+  CalculateRouteFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Runtime: nodejs12.x
+      Handler: calculateroutes.calculateRouteGET
+      Description: 'Calculates a route using a generic vehicle/pedestrian mode, e.g. car, truck, pedestrian, etc...'
+      Environment:
+        Variables:
+          HERE_API_KEY: !Ref HereApiKey
+      Events:
+        GET:
+          Type: Api
+          Properties:
+            Path: /calculateRoute/api/{resourcePath+}
+            Method: get
 
 Outputs:
   HereApiURL:
-    Description: "AWS API Gateway URL for HERE Routing & Waypoint Sequence API."
+    Description: "AWS API Gateway URL for HERE Routing,Waypoint Sequence & CalculateRoutes API."
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"

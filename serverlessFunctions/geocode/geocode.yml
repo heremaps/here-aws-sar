@@ -20,8 +20,8 @@ Resources:
         GET:
           Type: Api
           Properties:
-            Path: /geocode/api/{type}/{resourcePath+}
-            Method: any
+            Path: /geocode/api/{resourcePath+}
+            Method: GET
 Outputs:
   HereApiURL:
     Description: "AWS API Gateway URL for HERE GeoCode & GeoCode Suggest (aka autocomplete) API."

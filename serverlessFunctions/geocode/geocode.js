@@ -17,32 +17,19 @@
  * License-Filename: LICENSE
  */
 
-// https://developer.here.com/documentation/geocoder/topics/introduction.html
+// Reference document for HERE API
+
+// https://developer.here.com/documentation/geocoding-search-api/dev_guide/index.html
 
 'use strict';
-
 const axios = require("axios");
 const HERE_API_KEY = process.env.HERE_API_KEY;
+
 let statusCode = '200';
 
-const getData = async (url, apiMethod, postData) => {
-    let response = '';
-
+const getData = async url => {
     try {
-        if (apiMethod === 'POST') {
-            const options = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': '*',
-                    'Cache-Control': 'no-cache'
-                }
-            };
-
-            response = await axios.post(url, postData, options);
-        } else {
-            response = await axios.get(url);
-        }
-
+        const response = await axios.get(url);
         statusCode = response.status;
         return response.data;
     } catch (error) {
@@ -53,33 +40,25 @@ const getData = async (url, apiMethod, postData) => {
 
 exports.geocodeGET = async (event, context) => {
     console.log(`>>> HERE_API_KEY: ${HERE_API_KEY}`);
-    let apiMethod = "GET";
-    let postData = "";
+
     let args = "";
     for (let qsp in event.queryStringParameters) {
-        let qsa = "&" + qsp + "=" + event['queryStringParameters'][qsp];
+        let qsa = "&" + qsp + "=" + event['queryStringParameters'][qsp]
         console.log(`>>> QueryStringArg: ${qsa}`);
-        args += qsa;
+        args += qsa
     }
-
-    const type = event.pathParameters.type;
     const resourcePath = event.pathParameters.resourcePath;
+    const type = resourcePath.split("/")[1];
 
-    const HERE_API_URL = `https://${type}.ls.hereapi.com/${resourcePath}`;
-    const url = `${HERE_API_URL}?apiKey=${HERE_API_KEY}${args}`;
-    console.log(`>>> url: ${url}`);
+    const HERE_API_URL = `https://${type}.search.hereapi.com/${resourcePath}`;
+    const url = `${HERE_API_URL}?apikey=${HERE_API_KEY}${args}`;
 
-    if (url.indexOf("multi-reversegeocode") > 0) {
-        apiMethod = "POST";
-        postData = event.body;
-    }
-
-    const hlsAPIResponse = await getData(url, apiMethod, postData);
+    console.log(`url: ${url}`);
+    const hlsAPIResponse = await getData(url);
 
     const response = {
         statusCode: statusCode,
-        // headers: { 'Access-Control-Allow-Origin': '*' },
-        body: (parseInt(statusCode) === 200)? JSON.stringify(hlsAPIResponse) : JSON.stringify({ 'message' : hlsAPIResponse.response.data.Details })
+        body: (parseInt(statusCode) === 200) ? JSON.stringify(hlsAPIResponse) : JSON.stringify({ "title": hlsAPIResponse.response.data.title, "correlationId": hlsAPIResponse.response.data.correlationId })
     };
 
     context.succeed(response);

@@ -16,21 +16,19 @@
  * SPDX-License-Identifier: Apache-2.0
  * License-Filename: LICENSE
  */
-
 // Reference document for HERE API
 
-// https://developer.here.com/documentation/public-transit/api-reference-swagger.html
+// https://developer.here.com/documentation/routing-api/api-reference-swagger.html
 
 'use strict';
-
 const axios = require("axios");
-
 const HERE_API_KEY = process.env.HERE_API_KEY;
+const HERE_API_URL = "https://router.hereapi.com"
 let statusCode = '200';
 
 const getData = async url => {
     try {
-        const response = await axios.get(url)
+        const response = await axios.get(url);
         statusCode = response.status;
         return response.data;
     } catch (error) {
@@ -39,27 +37,24 @@ const getData = async url => {
     }
 };
 
-exports.transitGET = async (event, context) => {
+exports.calculateRouteGET = async (event, context) => {
+    console.log(`>>> HERE_API_KEY: ${HERE_API_KEY}`);
 
-    console.log(`>>> process.env.HERE_API_KEY: ${HERE_API_KEY}`);
-    const type = event.pathParameters.type;
-    const resourcePath = event.pathParameters.resourcePath;
-    let args = ""
-
+    let args = "";
     for (let qsp in event.queryStringParameters) {
         let qsa = "&" + qsp + "=" + event['queryStringParameters'][qsp]
-        console.log(`>>> QueryStringArg: ${qsa}`)
+        console.log(`>>> QueryStringArg: ${qsa}`);
         args += qsa
     }
-    const HERE_API_URL = `https://${type}.hereapi.com/${resourcePath}`;
-    const url = `${HERE_API_URL}?apikey=${HERE_API_KEY}${args}`;
-
-    console.log(`>>> url: ${url}`);
-
+    const resourcePath = event.pathParameters.resourcePath;
+    const url = `${HERE_API_URL}/${resourcePath}?apikey=${HERE_API_KEY}${args}`;
+    console.log(`url: ${url}`);
     const hlsAPIResponse = await getData(url);
+
     const response = {
         statusCode: statusCode,
-        body: (parseInt(statusCode) === 200) ? JSON.stringify(hlsAPIResponse) : JSON.stringify({ "title ": hlsAPIResponse.response.data.title })
+        body: (parseInt(statusCode) === 200) ? JSON.stringify(hlsAPIResponse) : JSON.stringify({ "title": hlsAPIResponse.response.data.title, "cause": hlsAPIResponse.response.data.cause })
     };
+
     context.succeed(response);
-}
+};
