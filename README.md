@@ -101,10 +101,7 @@ Note:
 
 
 <details>
-<summary markdown="span">
-
-####Geocoding and Search API v7
-</summary>
+<summary markdown="span">Geocoding and Search API v7</summary>
 
 URL Mapping
 
@@ -122,10 +119,7 @@ URL Mapping
 </details>
 
 <details>
-<summary markdown="span">
-
-####Map Image
-</summary>
+<summary markdown="span">Map Image</summary>
 
 URL Mapping
 
@@ -138,10 +132,7 @@ URL Mapping
 </details>
 
 <details>
-<summary markdown="span">
-
-####Map Tile
-</summary>
+<summary markdown="span">Map Tile</summary>
 
 URL Mapping
 
@@ -156,10 +147,7 @@ URL Mapping
 </details>
 
 <details>
-<summary markdown="span">
-
-####Positioning
-</summary>
+<summary markdown="span">Positioning</summary>
 
 URL Mapping
 
@@ -171,10 +159,7 @@ URL Mapping
 </details>
 
 <details>
-<summary markdown="span">
-
-####Routing API v8 & Routing Waypoints Sequence
-</summary>
+<summary markdown="span">Routing API v8 & Routing Waypoints Sequence</summary>
 
 URL Mapping
 
@@ -189,10 +174,7 @@ URL Mapping
 </details>
 
 <details>
-<summary markdown="span">
-
-####Toll Cost
-</summary>
+<summary markdown="span">Toll Cost</summary>
 
 URL Mapping
 
@@ -205,10 +187,7 @@ URL Mapping
 </details>
 
 <details>
-<summary markdown="span">
-
-####Traffic 
-</summary>
+<summary markdown="span">Traffic </summary>
 
 URL Mapping
 
@@ -222,10 +201,7 @@ URL Mapping
 </details>  
 
 <details>
-<summary markdown="span">
-
-####Public Transit API v8
-</summary>
+<summary markdown="span">Public Transit API v8</summary>
 
 URL Mapping
 
@@ -240,10 +216,7 @@ URL Mapping
 </details>
 
 <details>
-<summary markdown="span"> 
-
-####Weather 
-</summary>
+<summary markdown="span">Weather</summary>
 
 URL Mapping
 
