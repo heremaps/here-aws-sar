@@ -1,5 +1,5 @@
-# AWS SAR for HERE Location Service APIs - Weather
-## Introduction
+## AWS SAR for HERE Location Service APIs - Weather
+### Introduction
 This project provides [AWS Lambda](https://aws.amazon.com/lambda/) as __proxy__ for [HERE Weather API](https://developer.here.com/documentation/weather/topics/overview.html). This AWS Lambda is packaged as per the [AWS Serverless Application Model](https://aws.amazon.com/about-aws/whats-new/2016/11/introducing-the-aws-serverless-application-model/).
 
 "AWS SAR is natively supported by AWS CloudFormation and defines simplified syntax for expressing serverless resources. The specification currently covers APIs, Lambda functions and Amazon DynamoDB tables."
@@ -8,10 +8,10 @@ This project provides [AWS Lambda](https://aws.amazon.com/lambda/) as __proxy__ 
 
 The AWS API Gateway supports configuring both Cache and Throttling, and the lambdas are open source: we welcome pull requests with circuit breakers, graceful error handling, etc.!
 
-## Requirements
+### Requirements
 To successfully call the [HERE Weather API](https://developer.here.com/documentation/weather/topics/overview.html) through the proxy in this project, you need to obtain HERE API credentials. Multiple plans are available: https://aws.amazon.com/marketplace/pp/B07JPLG9SR/?ref=_ptnr_aws_sar_github#pricing-information.
 
-## Setup
+### Setup
 ### Step 1: Register for an API Key
 
 Visit the [HERE Location Services on AWS Marketplace](https://aws.amazon.com/marketplace/pp/B07JPLG9SR/?ref=_ptnr_aws_sar_github), and review the [Access Control FAQ](https://developer.here.com/faqs#access-control).
@@ -70,7 +70,7 @@ For guidance, see the [AWS Lambda FAQ](https://aws.amazon.com/lambda/faqs/#secur
 
 Consider implementing [AWS API Gateway Custom Authorizers](http://docs.aws.amazon.com/apigateway/latest/developerguide/use-custom-authorizer.html).
 
-## HERE Weather API with Lambda Proxy
+### HERE Weather API with Lambda Proxy
 Note: The Weather API is not available by default. Please contact the [here.com Sales Team](https://developer.here.com/contact-us#contact-sales) for more information.
 
 URL Mapping
@@ -82,26 +82,26 @@ URL Mapping
 * An example of an HTTP GET request to HERE Weather API & equivalent AWS Lambda Proxy:
 
     __HERE Weather API:__
-
+    ```
     `https://weather.ls.hereapi.com/weather/1.0/report.json?apiKey=<apiKey>&product=observation&name=Berlin-Tegel`
-
-    To call the Lambda proxy instead, replace the original URL with the API Gateway URL, change resourcePath and Query String Parameters as follows:
+    ```
+* To call the Lambda proxy instead, replace the original URL with the API Gateway URL, change resourcePath and Query String Parameters as follows:
 
     __Equivalent AWS Lambda Proxy for HERE Weather API:__
 
     API Gateway URL format:
-
-    `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/weather/api/{resourcePath+}`
-
+    ```
+    https://<apigw>.execute-api.<region>.amazonaws.com/Prod/weather/api/{resourcePath+}
+    ```
     {resourcePath+}: `weather/1.0/report.json?product=observation&name=Berlin-Tegel`
 
     API Gateway URL:
+    ```
+    https://<apigw>.execute-api.<region>.amazonaws.com/Prod/weather/api/weather/1.0/report.json?product=observation&name=Berlin-Tegel
+    ```
+For details document please refer [HERE Weather API](https://developer.here.com/documentation/weather/topics/overview.html)
 
-    `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/weather/api/weather/1.0/report.json?product=observation&name=Berlin-Tegel`
-
-For details please refer [HERE Weather API](https://developer.here.com/documentation/weather/topics/overview.html)
-
-## License
+### License
 
 Copyright (c) 2017-2019 HERE Europe B.V.
 

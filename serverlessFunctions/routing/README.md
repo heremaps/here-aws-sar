@@ -1,5 +1,5 @@
-# AWS SAR for HERE Location Service APIs - Routing API v8
-## Introduction
+## AWS SAR for HERE Location Service APIs - Routing API v8
+### Introduction
 This project provides [AWS Lambda](https://aws.amazon.com/lambda/) as __proxy__ for [HERE Routing API v8](https://developer.here.com/documentation/routing-api/api-reference-swagger.html) &[HERE Routing(isoline & matrix)](https://developer.here.com/documentation/routing/dev_guide/topics/what-is.html). This AWS Lambda is packaged as per the [AWS Serverless Application Model](https://aws.amazon.com/about-aws/whats-new/2016/11/introducing-the-aws-serverless-application-model/).
 
 "AWS SAR is natively supported by AWS CloudFormation and defines simplified syntax for expressing serverless resources. The specification currently covers APIs, Lambda functions and Amazon DynamoDB tables."
@@ -8,10 +8,10 @@ This project provides [AWS Lambda](https://aws.amazon.com/lambda/) as __proxy__ 
 
 The AWS API Gateway supports configuring both Cache and Throttling, and the lambdas are open source: we welcome pull requests with circuit breakers, graceful error handling, etc.!
 
-## Requirements
+### Requirements
 To successfully call the [HERE Routing API](https://developer.here.com/documentation/routing-api/api-reference-swagger.html) through the proxy in this project, you need to obtain HERE API credentials. Multiple plans are available: https://aws.amazon.com/marketplace/pp/B07JPLG9SR/?ref=_ptnr_aws_sar_github#pricing-information.
 
-## Setup
+### Setup
 ### Step 1: Register for an API Key
 
 Visit the [HERE Location Services on AWS Marketplace](https://aws.amazon.com/marketplace/pp/B07JPLG9SR/?ref=_ptnr_aws_sar_github), and review the [Access Control FAQ](https://developer.here.com/faqs#access-control).
@@ -70,7 +70,7 @@ For guidance, see the [AWS Lambda FAQ](https://aws.amazon.com/lambda/faqs/#secur
 
 Consider implementing [AWS API Gateway Custom Authorizers](http://docs.aws.amazon.com/apigateway/latest/developerguide/use-custom-authorizer.html).
 
-## HERE Maps API with Lambda Proxy
+### HERE Maps API with Lambda Proxy
 ### Routing
 
 URL Mapping
@@ -81,91 +81,111 @@ URL Mapping
 |Routing(Isoline)              | `https://isoline.route.ls.hereapi.com/`|  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/routing/api/isoline.route/` |
 |Routing(Matrix)              | `https://matrix.route.ls.hereapi.com/`|  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/routing/api/matrix.route/` |
 
-* An example of an HTTP GET request to HERE Routing v8(Calculate Route API) & equivalent AWS Lambda Proxy:
+An example of an HTTP GET request to HERE Routing API v8 & Routing Waypoints Sequence & equivalent AWS Lambda Proxy:
 
-    __HERE Routing API v8(Calculate Route API):__
+<details>
+  <summary markdown="span">CalculateRoute HTTP and Proxy URL</summary>
 
-   `https://router.hereapi.com/v8/routes?apikey=<apiKey>&transportMode=car&origin=52.5308,13.3847&destination=52.5323,13.3789&return=summary`
+* An example of an HTTP GET request to HERE CalculateRoute API & equivalent AWS Lambda Proxy:
 
-  To call the Lambda proxy instead, replace the original URL with the API Gateway URL, change the type, resourcePath and Query String Parameters as follows:
+  __HERE CalculateRoute API:__
+    ```
+    https://router.hereapi.com/v8/routes?apikey=<apiKey>&transportMode=car&origin=52.5308,13.3847&destination=52.5323,13.3789&return=summary
+   ```
+* To call the Lambda proxy instead, replace the original URL with the API Gateway URL, change the type, resourcePath and Query String Parameters as follows:
 
-    __Equivalent AWS Lambda Proxy for HERE Routing API v8(Calculate Route API):__
+  __Equivalent AWS Lambda Proxy for HERE Routing API v8(Calculate Route API):__
 
     API Gateway URL format:
+   ```
+   https://bn5llxp5m3.execute-api.us-west- 2.amazonaws.com/Prod/calculateRoute/api/{resourcePath+}
+   ```
+   {resourcePath+}: `v8/routes?transportMode=car&origin=52.5308,13.3847&destination=52.5323,13.3789&return=summary`
 
-    `https://bn5llxp5m3.execute-api.us-west-2.amazonaws.com/Prod/calculateRoute/api/{resourcePath+}`
-
-    {resourcePath+}: `v8/routes?transportMode=car&origin=52.5308,13.3847&destination=52.5323,13.3789&return=summary`
-
-    API Gateway URL:
-
-    `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/calculateRoute/api/v8/routes?transportMode=car&origin=52.5308,13.3847&destination=52.5323,13.3789&return=summary`
+   API Gateway URL:
+   ```
+  https://<apigw>.execute-api.<region>.amazonaws.com/Prod/calculateRoute/api/v8/routes?transportMode=car&origin=52.5308,13.3847&destination=52.5323,13.3789&return=summary`
+   ```
+</details>
     
-For details please refer [HERE Routing API v8(Calculate Route API)](https://developer.here.com/documentation/routing-api/api-reference-swagger.html)
+For details document please refer [HERE Routing API v8(Calculate Route API)](https://developer.here.com/documentation/routing-api/api-reference-swagger.html)
 
+<details>
+  <summary markdown="span">Routing(Isoline) HTTP and Proxy URL</summary>
 
 * An example of an HTTP GET request to HERE Routing(Isoline) API & equivalent AWS Lambda Proxy:
 
-__HERE Routing(Isoline) API:__
+   __HERE Routing(Isoline):__
+    ```
+    https://isoline.route.ls.hereapi.com/routing/7.2/calculateisoline.json?apiKey=<apiKey>&mode=fastest%3Bpedestrian&start=52.5160%2C13.3778&rangetype=distance&range=2000
+    ```
+ * To call the Lambda proxy instead, replace the original URL with the API Gateway URL, change the type, resourcePath and Query String Parameters as follows:
 
-`https://isoline.route.ls.hereapi.com/routing/7.2/calculateisoline.json?apiKey=<apiKey>&mode=fastest%3Bpedestrian&start=52.5160%2C13.3778&rangetype=distance&range=2000`
+   __Equivalent AWS Lambda Proxy for HERE Routing(Isoline) API:__
 
-To call the Lambda proxy instead, replace the original URL with the API Gateway URL, change the type, resourcePath and Query String Parameters as follows:
+     API Gateway URL format:
+     ```
+     https://<apigw>.execute-api.<region>.amazonaws.com/Prod/routing/api/{type}/{resourcePath+}
+     ```
+    {type}: isoline.route
 
-__Equivalent AWS Lambda Proxy for HERE Routing(Isoline) API:__
+    {resourcePath+}: `routing/7.2/calculateisoline.json?mode=fastest%3Bpedestrian&start=52.5160%2C13.3778&rangetype=distance&range=2000`
 
-API Gateway URL format:
+    API Gateway URL:
+    ```
+    https://<apigw>.execute-api.<region>.amazonaws.com/Prod/routing/api/isoline.route/routing/7.2/calculateisoline.json?mode=fastest%3Bpedestrian&start=52.5160%2C13.3778&rangetype=distance&range=2000`
+    ```
+    The AWS Lambda Proxy URL depends on the base URL type. For example:
+    ```
+    https://isoline.route.ls.hereapi.com/routing/7.2/calculateisoline.json
+    ```
+    Base URL/type: isoline.route
 
-`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/routing/api/{type}/{resourcePath+}`
+    Lambda Proxy URL: /routing/api/isoline.route/
 
-{type}: isoline.route
+</details>
 
-{resourcePath+}: `routing/7.2/calculateisoline.json?mode=fastest%3Bpedestrian&start=52.5160%2C13.3778&rangetype=distance&range=2000`
-
-API Gateway URL:
-
-`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/routing/api/isoline.route/routing/7.2/calculateisoline.json?mode=fastest%3Bpedestrian&start=52.5160%2C13.3778&rangetype=distance&range=2000`
+<details>
+  <summary markdown="span">Routing(Matrix) HTTP and Proxy URL</summary>
 
 * An example of an HTTP GET request to HERE Routing(Matrix) API & equivalent AWS Lambda Proxy:
 
+     __HERE Routing(Matrix) API:__
+    ```
+    https://matrix.route.ls.hereapi.com/routing/7.2/calculatematrix.json?apiKey=<apiKey>&mode=fastest%3Btruck%3Btraffic%3Adisabled%3B&start0=40.7790%2C-73.9622&destination0=40.7482%2C-73.9860&destination1=40.7558%2C-73.9870&destination2=40.7054%2C-73.9961
+   ```
+* To call the Lambda proxy instead, replace the original URL with the API Gateway URL, change the type, resourcePath and Query String Parameters as follows:
 
-__HERE Routing(Matrix) API:__
+    __Equivalent AWS Lambda Proxy for HERE Routing(Matrix) API:__
 
-`https://matrix.route.ls.hereapi.com/routing/7.2/calculatematrix.json?apiKey=<apiKey>&mode=fastest%3Btruck%3Btraffic%3Adisabled%3B&start0=40.7790%2C-73.9622&destination0=40.7482%2C-73.9860&destination1=40.7558%2C-73.9870&destination2=40.7054%2C-73.9961`
+     API Gateway URL format:
+    ```
+    https://<apigw>.execute-api.<region>.amazonaws.com/Prod/routing/api/{type}/{resourcePath+}
+    ```
+   {type}: matrix.route
 
-To call the Lambda proxy instead, replace the original URL with the API Gateway URL, change the type, resourcePath and Query String Parameters as follows:
+   {resourcePath+}: `routing/7.2/calculatematrix.json?apiKey=<apiKey>&mode=fastest%3Btruck%3Btraffic%3Adisabled%3B&start0=40.7790%2C-73.9622&destination0=40.7482%2C-73.9860&destination1=40.7558%2C-73.9870&destination2=40.7054%2C-73.9961`
 
-__Equivalent AWS Lambda Proxy for HERE Routing(Matrix) API:__
+   API Gateway URL:
+   ```
+   https://<apigw>.execute-api.<region>.amazonaws.com/Prod/routing/api/matrix.route/routing/7.2/calculatematrix.json?mode=fastest%3Btruck%3Btraffic%3Adisabled%3B&start0=40.7790%2C-73.9622&destination0=40.7482%2C-73.9860&destination1=40.7558%2C-73.9870&destination2=40.7054%2C-73.9961
+  ```
 
-API Gateway URL format:
+  The AWS Lambda Proxy URL depends on the base URL type. For example:
+  ```
+  https://matrix.route.ls.hereapi.com/routing/7.2/calculatematrix.json
+  ```
 
-`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/routing/api/{type}/{resourcePath+}`
+  Base URL/type: matrix.route
 
-{type}: matrix.route
+  Lambda Proxy URL: /routing/api/matrix.route/
 
-{resourcePath+}: `routing/7.2/calculatematrix.json?apiKey=<apiKey>&mode=fastest%3Btruck%3Btraffic%3Adisabled%3B&start0=40.7790%2C-73.9622&destination0=40.7482%2C-73.9860&destination1=40.7558%2C-73.9870&destination2=40.7054%2C-73.9961`
+</details>
 
-API Gateway URL:
+For details document please refer [HERE Routing(isoline & matrix)](https://developer.here.com/documentation/routing/dev_guide/topics/what-is.html)
 
-`https://<apigw>.execute-api.<region>.amazonaws.com/Prod/routing/api/matrix.route/routing/7.2/calculatematrix.json?mode=fastest%3Btruck%3Btraffic%3Adisabled%3B&start0=40.7790%2C-73.9622&destination0=40.7482%2C-73.9860&destination1=40.7558%2C-73.9870&destination2=40.7054%2C-73.9961`
-
-The AWS Lambda Proxy URL depends on the base URL type. For example:
-
-`https://isoline.route.ls.hereapi.com/routing/7.2/calculateisoline.json`
-
-Base URL/type: isoline.route
-
-Lambda Proxy URL: /routing/api/isoline.route/
-
-`https://matrix.route.ls.hereapi.com/routing/7.2/calculatematrix.json`
-
-Base URL/type: matrix.route
-
-Lambda Proxy URL: /routing/api/matrix.route/
-
-For details please refer https://developer.here.com/documentation/routing/dev_guide/topics/what-is.html
-
-### Waypoint Sequence (Routing)
+<details>
+<summary markdown="span">Waypoint Sequence (Routing)</summary>
 
 URL Mapping
 
@@ -173,30 +193,29 @@ URL Mapping
 |-------------------- |-------------------------------------------------|-----------------------------------------------------------|
 |Waypoint             | `https://wse.ls.hereapi.com/`                   |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/waypointseq/api/` |
 
-* An example of an HTTP GET request to HERE Waypoint Sequence (Routing) API & equivalent AWS Lambda Proxy:
+<details>
+  <summary markdown="span">Waypoint Sequence HTTP and Proxy URL</summary>
 
-    __HERE Waypoint Sequence (Routing) API:__
+* An example of an HTTP GET request to HERE Waypoint Sequence API  equivalent AWS Lambda Proxy:
 
-    `https://wse.ls.hereapi.com/2/findsequence.json?apiKey=<apiKey>&start=WiesbadenCentralStation;50.0715,8.2434&destination1=FranfurtCentralStation;50.1073,8.6647&destination2=DarmstadtCentralStation;49.8728,8.6326&destination3=FrankfurtAirport;50.050639,8.569641&destination4=HanauCentralStation;50.1218,8.9298&end=MainzCentralStation;50.0021,8.259&improveFor=distance&mode=fastest;truck;traffic:disabled;&hasTrailer=true&limitedWeight=18&height=4.00&width=2.50&length=18.35`
+    __HERE Waypoint Sequence API:__
+     ```
+     https://wse.ls.hereapi.com/2/findsequence.json?apiKey=<apiKey>&start=WiesbadenCentralStation;50.0715,8.2434&destination1=FranfurtCentralStation;50.1073,8.6647&destination2=DarmstadtCentralStation;49.8728,8.6326&destination3=FrankfurtAirport;50.050639,8.569641&destination4=HanauCentralStation;50.1218,8.9298&end=MainzCentralStation;50.0021,8.259&improveFor=distance&mode=fastest;truck;traffic:disabled;&hasTrailer=true&limitedWeight=18&height=4.00&width=2.50&length=18.35
+    ```
+* To call the Lambda proxy instead, replace the original URL with the API Gateway URL and change the Query String Parameters as follows:
 
-    To call the Lambda proxy instead, replace the original URL with the API Gateway URL, change the resourcePath and Query String Parameters as follows:
+   __Equivalent AWS Lambda Proxy for HERE Waypoint Sequence API:__
+     ```
+     https://<apigw>.execute-api.<region>.amazonaws.com/Prod/waypointseq/api/2/findsequence.json?start=WiesbadenCentralStation%3b50.0715%2c8.2434&destination1=FranfurtCentralStation%3b50.1073%2c8.6647&destination2=DarmstadtCentralStation%3b49.8728%2c8.6326&destination3=FrankfurtAirport%3b50.0505%2c8.5698&destination4=HanauCentralStation%3b50.1218%2c8.9298&end=MainzCentralStation%3b50.0021%2c8.259&improveFor=time&mode=fastest%3bcar%3btraffic:disabled%3b
+    ```
 
-    __Equivalent AWS Lambda Proxy for HERE Waypoint Sequence (Routing) API:__
-
-    API Gateway URL format:
-
-    `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/waypointseq/api/{resourcePath+}`
-
-    {resourcePath+}: `2/findsequence.json?start=WiesbadenCentralStation;50.0715,8.2434&destination1=FranfurtCentralStation;50.1073,8.6647&destination2=DarmstadtCentralStation;49.8728,8.6326&destination3=FrankfurtAirport;50.050639,8.569641&destination4=HanauCentralStation;50.1218,8.9298&end=MainzCentralStation;50.0021,8.259&improveFor=distance&mode=fastest;truck;traffic:disabled;&hasTrailer=true&limitedWeight=18&height=4.00&width=2.50&length=18.35`
-
-    API Gateway URL:
-
-    `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/waypointseq/api/2/findsequence.json?start=WiesbadenCentralStation%3b50.0715%2c8.2434&destination1=FranfurtCentralStation%3b50.1073%2c8.6647&destination2=DarmstadtCentralStation%3b49.8728%2c8.6326&destination3=FrankfurtAirport%3b50.0505%2c8.5698&destination4=HanauCentralStation%3b50.1218%2c8.9298&end=MainzCentralStation%3b50.0021%2c8.259&improveFor=time&mode=fastest%3bcar%3btraffic:disabled%3b`
+</details>
+</details>
 
 
-For details please refer [HERE Routing Waypoints aka Sequence API](https://developer.here.com/documentation/routing-waypoints/topics/introduction.html)
+ For details document please refer [HERE Routing Waypoints aka Sequence API](https://developer.here.com/documentation/routing-waypoints/topics/introduction.html)
 
-## License
+### License
 
 Copyright (c) 2017-2019 HERE Europe B.V.
 

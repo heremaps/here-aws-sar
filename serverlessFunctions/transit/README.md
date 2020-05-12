@@ -1,5 +1,5 @@
-# AWS SAR for HERE Location Service APIs -Public Transit v8
-## Introduction
+## AWS SAR for HERE Location Service APIs -Public Transit v8
+### Introduction
 This project provides [AWS Lambda](https://aws.amazon.com/lambda/) as __proxy__ for [Public Transit v8 API](https://developer.here.com/documentation/public-transit/api-reference-swagger.html). This AWS Lambda is packaged as per the [AWS Serverless Application Model](https://aws.amazon.com/about-aws/whats-new/2016/11/introducing-the-aws-serverless-application-model/).
 
 "AWS SAR is natively supported by AWS CloudFormation and defines simplified syntax for expressing serverless resources. The specification currently covers APIs, Lambda functions and Amazon DynamoDB tables."
@@ -8,10 +8,10 @@ This project provides [AWS Lambda](https://aws.amazon.com/lambda/) as __proxy__ 
 
 The AWS API Gateway supports configuring both Cache and Throttling, and the lambdas are open source: we welcome pull requests with circuit breakers, graceful error handling, etc.!
 
-## Requirements
+### Requirements
 To successfully call the [Public Transit v8 API](https://developer.here.com/documentation/public-transit/api-reference-swagger.html) through the proxy in this project, you need to obtain HERE API credentials. Multiple plans are available: https://aws.amazon.com/marketplace/pp/B07JPLG9SR/?ref=_ptnr_aws_sar_github#pricing-information.
 
-## Setup
+### Setup
 ### Step 1: Register for an API Key
 
 Visit the [HERE Location Services on AWS Marketplace](https://aws.amazon.com/marketplace/pp/B07JPLG9SR/?ref=_ptnr_aws_sar_github), and review the [Access Control FAQ](https://developer.here.com/faqs#access-control).
@@ -70,81 +70,101 @@ For guidance, see the [AWS Lambda FAQ](https://aws.amazon.com/lambda/faqs/#secur
 
 Consider implementing [AWS API Gateway Custom Authorizers](http://docs.aws.amazon.com/apigateway/latest/developerguide/use-custom-authorizer.html).
 
-## HERE Public Transit API v8 with Lambda Proxy
+### HERE Public Transit API v8 with Lambda Proxy
 URL Mapping
 
 |API                  | HERE URL Prefix                                 |  AWS Lambda App URL Prefix |
 |-------------------- |-------------------------------------------------|-----------------------------------------------------------|
 |Next Departures              | `https:/transit.hereapi.com/`               |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/transit/api/` |
 |Station Search              | `https:/transit.hereapi.com/`               |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/transit/api/` |
-|Routing              | `https:/transit.router.hereapi.com/`               |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/transit/api/` |S Lambda Proxy:
+|Routing              | `https:/transit.router.hereapi.com/`               |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/transit/api/` |
 
-   __HERE Public Transit API v8(Next Departures):__
+An example of an HTTP GET request to HERE Public Transit API v8 & equivalent AWS Lambda Proxy:
+<details>
+  <summary markdown="span">Next Departures HTTP and Proxy URL</summary>
 
-   `https:/transit.hereapi.com/v8/departures?apiKey=<apiKey>&ids=415712992`
-   
-    To call the Lambda proxy instead, replace the original URL with the API Gateway URL, change resourcePath and Query String Parameters as follows:
+* An example of an HTTP GET request to HERE Next Departures API & equivalent AWS  Lambda Proxy:
 
-   __Equivalent AWS Lambda Proxy for HERE Transit API V8 (Next Departures):__
+   __HERE Next Departures API:__
+   ```
+  https:/transit.hereapi.com/v8/departures?apiKey=<apiKey>&ids=415712992
+   ```
+* To call the Lambda proxy instead, replace the original URL with the API Gateway URL, change resourcePath and Query String Parameters as follows:
 
-    API Gateway URL format:
-   `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/transit/api/{type}/{resourcePath+}`
+  __Equivalent AWS Lambda Proxy for Next Departures:__
 
-    {type}:`transit`
+   API Gateway URL format:
+   ```
+   https://<apigw>.execute-api.<region>.amazonaws.com/Prod/transit/api/{type}/{resourcePath+}
+   ```
+   {type}:`transit`
 
    {resourcePath+}: `v8/departures?ids=415712992`
 
-    API Gateway URL:
+   API Gateway URL:
+   ```
+   https://<apigw>.execute-api.<region>.amazonaws.com/Prod/transit/api/transit/v8/departures?ids=415712992`
+   ```
+   </details>
 
-   `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/transit/api/transit/v8/departures?ids=415712992`
+<details>
+  <summary markdown="span">Station Search HTTP and Proxy URL</summary>
 
-    An example of an HTTP GET request to HERE Transit API V8 & equivalent AWS Lambda Proxy:
+ * An example of an HTTP GET request to HERE Station Search API & equivalent AWS  Lambda Proxy:
+  
+   __HERE Station Search API:__
+     ```
+    https:/transit.hereapi.com/v8/stations?apiKey=<apiKey>&in=41.90123,12.500912
+     ```
+* To call the Lambda proxy instead, replace the original URL with the API Gateway URL, change resourcePath and Query String Parameters as follows:
 
-   __HERE Public Transit API V8(Station Search):__
-
-   `https:/transit.hereapi.com/v8/stations?apiKey=<apiKey>&in=41.90123,12.500912`
-
-    To call the Lambda proxy instead, replace the original URL with the API Gateway URL, change resourcePath and Query String Parameters as follows:
-
-   __Equivalent AWS Lambda Proxy for HERE Transit API V8 (Station Search):__
-
+  __Equivalent AWS Lambda Proxy for HERE Station Search:__
+  
    API Gateway URL format:
+   ```
+   https://<apigw>.execute-api.<region>.amazonaws.com/Prod/transit/api/{type}/{resourcePath+}
+   ```
+   {type}:`transit`
 
-   `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/transit/api/{type}/{resourcePath+}`
+  {resourcePath+}: `v8/stations?in=41.90123,12.50091`
+  
+   API Gateway URL:
+  ```
+  https://<apigw>.execute-api.<region>.amazonaws.com/Prod/transit/api/transit/v8/stations?in=41.90123,12.50091
+  ```
+   </details>
 
-    {type}:`transit`
+  <details>
+  <summary markdown="span">Routing HTTP and Proxy URL</summary>
 
-   {resourcePath+}: `v8/stations?in=41.90123,12.50091`
+  * An example of an HTTP GET request to HERE Transit Routing API equivalent AWS  Lambda Proxy:
+  
+    __HERE Transit Routing API:__
+    ```
+    https://transit.router.hereapi.com/v8/routes?apiKey=<apiKey>&ids=415712992
+    ```
 
-    API Gateway URL:
+  * To call the Lambda proxy instead, replace the original URL with the API Gateway URL, change resourcePath and Query String Parameters as follows:
 
-   `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/transit/api/transit/v8/stations?in=41.90123,12.50091`
+    __Equivalent AWS Lambda Proxy for HERE Transit Routing API:__
 
-    An example of an HTTP GET request to HERE Transit API V8 & equivalent AWS Lambda Proxy:
+      API Gateway URL format:
+      ```
+      https://<apigw>.execute-api.<region>.amazonaws.com/Prod/transit/api/{type}/{resourcePath+}
+      ```
+      {type}:`transit.router`
 
-  __HERE Public Transit API v8(Routing):__
+      {resourcePath+}: `v8/routes?origin=41.79457,12.25473&destination=1.90096,12.50243`
 
-   `https://transit.router.hereapi.com/v8/routes?apiKey=<apiKey>&ids=415712992`
+      API Gateway URL:
+      ```
+      https://<apigw>.execute-api.<region>.amazonaws.com/Prod/transit/api/transit.router/v8/routes?origin=41.79457,12.25473&destination=1.90096,12.50243`
+      ```
+      For details document please refer [Public Transit v8 API](https://developer.here.com/documentation/public-transit/api-reference-swagger.html)
+   </details>
+  
 
-    To call the Lambda proxy instead, replace the original URL with the API Gateway URL, change resourcePath and Query String Parameters as follows:
-
-  __Equivalent AWS Lambda Proxy for HERE Transit API V8 (Routing):__
-
-    API Gateway URL format:
-
-   `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/transit/api/{type}/{resourcePath+}`
-
-    {type}:`transit.router`
-
-   {resourcePath+}: `v8/routes?origin=41.79457,12.25473&destination=1.90096,12.50243`
-
-    API Gateway URL:
-
-   `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/transit/api/transit.router/v8/routes?origin=41.79457,12.25473&destination=1.90096,12.50243`
-
-    For details please refer [Public Transit v8 API](https://developer.here.com/documentation/public-transit/api-reference-swagger.html)
-
-## License
+### License
 
 Copyright (c) 2017-2019 HERE Europe B.V.
 

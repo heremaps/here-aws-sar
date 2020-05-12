@@ -1,5 +1,5 @@
-# AWS SAR for HERE Location Service APIs - Map Image
-## Introduction
+## AWS SAR for HERE Location Service APIs - Map Image
+### Introduction
 This project provides [AWS Lambda](https://aws.amazon.com/lambda/) as __proxy__ for [HERE Map Image API](https://developer.here.com/documentation/map-image/topics/introduction.html). This AWS Lambda is packaged as per the [AWS Serverless Application Model](https://aws.amazon.com/about-aws/whats-new/2016/11/introducing-the-aws-serverless-application-model/).
 
 "AWS SAR is natively supported by AWS CloudFormation and defines simplified syntax for expressing serverless resources. The specification currently covers APIs, Lambda functions and Amazon DynamoDB tables."
@@ -8,10 +8,10 @@ This project provides [AWS Lambda](https://aws.amazon.com/lambda/) as __proxy__ 
 
 The AWS API Gateway supports configuring both Cache and Throttling, and the lambdas are open source: we welcome pull requests with circuit breakers, graceful error handling, etc.!
 
-## Requirements
+### Requirements
 To successfully call the [HERE Map Image API](https://developer.here.com/documentation/map-image/topics/introduction.html) through the proxy in this project, you need to obtain HERE API credentials. Multiple plans are available: https://aws.amazon.com/marketplace/pp/B07JPLG9SR/?ref=_ptnr_aws_sar_github#pricing-information.
 
-## Setup
+### Setup
 ### Step 1: Register for an API Key
 
 Visit the [HERE Location Services on AWS Marketplace](https://aws.amazon.com/marketplace/pp/B07JPLG9SR/?ref=_ptnr_aws_sar_github), and review the [Access Control FAQ](https://developer.here.com/faqs#access-control).
@@ -70,7 +70,7 @@ For guidance, see the [AWS Lambda FAQ](https://aws.amazon.com/lambda/faqs/#secur
 
 Consider implementing [AWS API Gateway Custom Authorizers](http://docs.aws.amazon.com/apigateway/latest/developerguide/use-custom-authorizer.html).
 
-## HERE Maps API with Lambda Proxy
+### HERE Maps API with Lambda Proxy
 `Note:`
 `- For Map Image API, success response will return base 64 encoding of map image (not JSON) and for failures, message as error in downloading map will be returned.`
 
@@ -81,28 +81,29 @@ URL Mapping
 |Images               | `https://image.maps.ls.hereapi.com/`            |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/mapimage/api/` |
 
 * An example of an HTTP GET request to HERE Map Image API & equivalent AWS Lambda Proxy:
-
+    
     __HERE Map Image API:__
+     ```
+     https://image.maps.ls.hereapi.com/mia/1.6/mapview?apiKey=   <apiKey>&lat=63.529722&lon=-19.513889
+     ```
+* To call the Lambda proxy instead, replace the original URL with the API Gateway URL, change resourcePath and Query String Parameters as follows:
 
-    `https://image.maps.ls.hereapi.com/mia/1.6/mapview?apiKey=<apiKey>&lat=63.529722&lon=-19.513889`
-
-    To call the Lambda proxy instead, replace the original URL with the API Gateway URL, change resourcePath and Query String Parameters as follows:
-
-    __Equivalent AWS Lambda Proxy for HERE Map Image API:__
+  __Equivalent AWS Lambda Proxy for HERE Map Image API:__
 
     API Gateway URL format:
+    ```
+   https://<apigw>.execute-api.<region>.amazonaws.com/Prod/mapimage/api/{resourcePath+}
+    ```
+   {resourcePath+}: `mia/1.6/mapview?t=1&lat=63.529722&lon=-19.513889`
 
-    `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/mapimage/api/{resourcePath+}`
+   API Gateway URL:
+   ```
+   https://<apigw>.execute-api.<region>.amazonaws.com/Prod/mapimage/api/mia/1.6/mapview?t=1&lat=63.529722&lon=-19.513889
+   ```
 
-    {resourcePath+}: `mia/1.6/mapview?t=1&lat=63.529722&lon=-19.513889`
+  For details documents please refer [HERE Map Image API](https://developer.here.com/documentation/map-image/topics/introduction.html)
 
-    API Gateway URL:
-
-    `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/mapimage/api/mia/1.6/mapview?t=1&lat=63.529722&lon=-19.513889`
-
-For details please refer [HERE Map Image API](https://developer.here.com/documentation/map-image/topics/introduction.html)
-
-## License
+### License
 
 Copyright (c) 2017-2019 HERE Europe B.V.
 

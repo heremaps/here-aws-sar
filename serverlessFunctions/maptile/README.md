@@ -1,5 +1,5 @@
-# AWS SAR for HERE Location Service APIs - Map Tile
-## Introduction
+## AWS SAR for HERE Location Service APIs - Map Tile
+### Introduction
 This project provides [AWS Lambda](https://aws.amazon.com/lambda/) as __proxy__ for [HERE Map Tile API](https://developer.here.com/documentation/map-tile/topics/introduction.html). This AWS Lambda is packaged as per the [AWS Serverless Application Model](https://aws.amazon.com/about-aws/whats-new/2016/11/introducing-the-aws-serverless-application-model/).
 
 "AWS SAR is natively supported by AWS CloudFormation and defines simplified syntax for expressing serverless resources. The specification currently covers APIs, Lambda functions and Amazon DynamoDB tables."
@@ -8,10 +8,10 @@ This project provides [AWS Lambda](https://aws.amazon.com/lambda/) as __proxy__ 
 
 The AWS API Gateway supports configuring both Cache and Throttling, and the lambdas are open source: we welcome pull requests with circuit breakers, graceful error handling, etc.!
 
-## Requirements
+### Requirements
 To successfully call the [HERE Map Tile API](https://developer.here.com/documentation/map-tile/topics/introduction.html) through the proxy in this project, you need to obtain HERE API credentials. Multiple plans are available: https://aws.amazon.com/marketplace/pp/B07JPLG9SR/?ref=_ptnr_aws_sar_github#pricing-information.
 
-## Setup
+### Setup
 ### Step 1: Register for an API Key
 
 Visit the [HERE Location Services on AWS Marketplace](https://aws.amazon.com/marketplace/pp/B07JPLG9SR/?ref=_ptnr_aws_sar_github), and review the [Access Control FAQ](https://developer.here.com/faqs#access-control).
@@ -70,7 +70,7 @@ For guidance, see the [AWS Lambda FAQ](https://aws.amazon.com/lambda/faqs/#secur
 
 Consider implementing [AWS API Gateway Custom Authorizers](http://docs.aws.amazon.com/apigateway/latest/developerguide/use-custom-authorizer.html).
 
-## HERE Map Tile API with Lambda Proxy
+### HERE Map Tile API with Lambda Proxy
 `Note:`
 `- For Map MapTile API, success response will return base 64 encoding of map image (not JSON) and for failures, message as error in downloading map will be returned.`
 
@@ -82,58 +82,62 @@ URL Mapping
 |MapTile              | `https://{1.4}.base.maps.ls.hereapi.com/`       |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/maptile/api/base/`
 |MapTile              | `https://{1.4}.aerial.maps.ls.hereapi.com/`     |  `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/maptile/api/aerial/`
 
-* An example of an HTTP GET request to HERE Map Tile API & equivalent AWS Lambda Proxy:
+* An example of an HTTP GET request to HERE Map Tile API for Base Map Tiles & equivalent AWS Lambda Proxy:
 
     __HERE Map Tile API for Base Map Tiles:__
+    ```
+  https://1.base.maps.ls.hereapi.com/maptile/2.1/maptile/newest/normal.day/13/4400/2686/256/jpg?apiKey=<apiKey>
+    ```
 
-    `https://1.base.maps.ls.hereapi.com/maptile/2.1/maptile/newest/normal.day/13/4400/2686/256/jpg?apiKey=<apiKey>`
-
-    To call the Lambda proxy instead, replace the original URL with the API Gateway URL, change the type, resourcePath and Query String Parameters as follows:
+* To call the Lambda proxy instead, replace the original URL with the API Gateway URL, change the type, resourcePath and Query String Parameters as follows:
 
     __Equivalent AWS Lambda Proxy for HERE Map Tile API for Base Map Tiles:__
 
-    API Gateway URL format:
-
-    `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/maptile/api/{type}/{resourcePath+}`
-
+     API Gateway URL format:
+     ```
+  https://<apigw>.execute-api.<region>.amazonaws.com/Prod/maptile/api/{type}/{resourcePath+}
+     ```
     {type}: `base`
 
     {resourcePath+}: `maptile/2.1/maptile/newest/normal.day/13/4400/2686/256/jpg`
 
     API Gateway URL:
-
-    `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/maptile/api/base/maptile/2.1/maptile/newest/normal.day/13/4400/2686/256/jpg`
+    ```
+  https://<apigw>.execute-api.<region>.amazonaws.com/Prod/maptile/api/base/maptile/2.1/maptile/newest/normal.day/13/4400/2686/256/jpg
+    ```
 
 * An example of an HTTP GET request to HERE Map Tile API & equivalent AWS Lambda Proxy:
 
     __HERE Map Tile API for Aerial Tiles:__
+     ```
+  https://1.aerial.maps.ls.hereapi.com/maptile/2.1/maptile/newest/terrain.day/7/66/45/256/png8?apiKey=<apiKey>
+     ```
 
-    `https://1.aerial.maps.ls.hereapi.com/maptile/2.1/maptile/newest/terrain.day/7/66/45/256/png8?apiKey=<apiKey>`
-
-    To call the Lambda proxy instead, replace the original URL with the API Gateway URL, change the type, resourcePath and Query String Parameters as follows:
+* To call the Lambda proxy instead, replace the original URL with the API Gateway URL, change the type, resourcePath and Query String Parameters as follows:
 
     __Equivalent AWS Lambda Proxy for HERE Map Tile API for Aerial Tiles:__
 
-    API Gateway URL format:
-
-    `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/maptile/api/{type}/{resourcePath+}`
-
+     API Gateway URL format:
+     ```
+     https://<apigw>.execute-api.<region>.amazonaws.com/Prod/maptile/api/{type}/{resourcePath+}
+     ```
     {type}: `aerial`
 
     {resourcePath+}: `maptile/2.1/maptile/newest/terrain.day/7/66/45/256/png8`
 
     API Gateway URL:
+    ```
+  https://<apigw>.execute-api.<region>.amazonaws.com/Prod/maptile/api/aerial/maptile/2.1/maptile/newest/terrain.day/7/66/45/256/png8
+    ```
 
-    `https://<apigw>.execute-api.<region>.amazonaws.com/Prod/maptile/api/aerial/maptile/2.1/maptile/newest/terrain.day/7/66/45/256/png8`
+   `Note:`
+   `Here {type} is the tile type like base, aerial, traffic`
 
-    `Note:`
-    `Here {type} is the tile type like base, aerial, traffic`
+    The AWS Lambda Proxy URL depends on the base URL type. For example:
 
-The AWS Lambda Proxy URL depends on the base URL type. For example:
+ * https://1.traffic.maps.api.here.com/maptile/2.1/traffictile/newest
 
-* https://1.traffic.maps.api.here.com/maptile/2.1/traffictile/newest
-
-    Base URL/tile type: traffic
+     Base URL/tile type: traffic
 
     Lambda Proxy URL: /maptile/api/traffic/
 
@@ -143,9 +147,9 @@ The AWS Lambda Proxy URL depends on the base URL type. For example:
 
     Lambda Proxy URL: /maptile/api/base/
 
-For details please refer [HERE Map Tile API](https://developer.here.com/documentation/map-tile/topics/introduction.html)
+For details documnet please refer [HERE Map Tile API](https://developer.here.com/documentation/map-tile/topics/introduction.html)
 
-## License
+### License
 
 Copyright (c) 2017-2019 HERE Europe B.V.
 
