@@ -25,25 +25,25 @@ To successfully call the HERE Maps APIs through the proxies in this project you 
 
 ### Setup
 
-* ##### Step 1: Register for an API Key
+* #### Step 1: Register for an API Key
 
     Visit the [HERE Location Services on AWS Marketplace](https://aws.amazon.com/marketplace/pp/B07JPLG9SR/?ref=_ptnr_aws_sar_github), and review the [Access Control FAQ](https://developer.here.com/faqs#access-control).
 
-* ##### Step 2: Register an AWS Account
+* #### Step 2: Register an AWS Account
 
     Visit [AWS](https://aws.amazon.com/free/) and sign up for a Free Tier account.
 
-* ##### Step 3: Install the AWS CLI and run "aws configure"
+* #### Step 3: Install the AWS CLI and run "aws configure"
 
     Download and install the [AWS CLI](https://aws.amazon.com/cli/), and run `aws configure` as per the [AWS CLI User Guide](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html).
 
-* ##### Step 4: Get the Source
+* #### Step 4: Get the Source
 
     From GitHub: clone [this repository](https://github.com/heremaps/here-aws-sar), or download the ZIP.
 
     The folder containing the lambda source code (JS) and CloudFormation templates (YML) is `serverlessFunctions`.
 
-* ##### Step 5: Package
+* #### Step 5: Package
 
     An S3 bucket is required as a destination for the AWS SAR package. If you don't have one already, create one:
 
@@ -58,13 +58,13 @@ To successfully call the HERE Maps APIs through the proxies in this project you 
 
     ```x:\src\here-aws-repository\serverlessFunctions>aws cloudformation package --s3-bucket here-maps-api--aws-sar --template-file geocode\geocode.yml --output-template-file geocode-packaged.yml```
 
-* ##### Step 6: Deploy
+* #### Step 6: Deploy
 
     Use the AWS CLI to deploy the AWS SAR package using CloudFormation:
 
     ```x:\src\here-aws-repository\serverlessFunctions>aws cloudformation deploy --capabilities CAPABILITY_IAM --stack-name "HERE-Maps-API--GeoCode" --parameter-overrides HereApiKey=<apiKey> --template-file geocode-packaged.yml```
 
-* ##### Step 7: Find new API Gateway URL
+* #### Step 7: Find new API Gateway URL
 
     Once deployment completes, look for the URL of the new API Gateway. It should follow this pattern:
 
@@ -74,7 +74,7 @@ To successfully call the HERE Maps APIs through the proxies in this project you 
 
     Alternatively look at the API Gateway in the AWS Console, select Stages, and then expand the tree until you see "Invoke URL".
 
-* ##### Step 8: Secure your API Gateways/Lambdas
+* #### Step 8: Secure your API Gateways/Lambdas
 
     The AWS Lambda proxies deployed above do not impose **authentication** or **authorization** restrictions!
 
@@ -101,7 +101,10 @@ Note:
 
 
 <details>
-<summary markdown="span">**Geocoding and Search API v7**</summary>
+<summary markdown="span">
+
+####Geocoding and Search API v7
+</summary>
 
 URL Mapping
 
@@ -119,7 +122,10 @@ URL Mapping
 </details>
 
 <details>
-<summary markdown="span">**Map Image**</summary>
+<summary markdown="span">
+
+####Map Image
+</summary>
 
 URL Mapping
 
@@ -132,7 +138,10 @@ URL Mapping
 </details>
 
 <details>
-<summary markdown="span">**Map Tile**</summary>
+<summary markdown="span">
+
+####Map Tile
+</summary>
 
 URL Mapping
 
@@ -147,9 +156,10 @@ URL Mapping
 </details>
 
 <details>
-<summary markdown="span">**Positioning**</summary>
+<summary markdown="span">
 
-Note: The API type is HTTP **POST**. For GET requests, "Missing Authentication Token" response will be returned from AWS as **POST** type request is expected.   
+####Positioning
+</summary>
 
 URL Mapping
 
@@ -161,7 +171,10 @@ URL Mapping
 </details>
 
 <details>
-<summary markdown="span">**Routing API v8 & Routing Waypoints Sequence**</summary>
+<summary markdown="span">
+
+####Routing API v8 & Routing Waypoints Sequence
+</summary>
 
 URL Mapping
 
@@ -176,7 +189,10 @@ URL Mapping
 </details>
 
 <details>
-<summary markdown="span">**Toll Cost**</summary>
+<summary markdown="span">
+
+####Toll Cost
+</summary>
 
 URL Mapping
 
@@ -189,7 +205,10 @@ URL Mapping
 </details>
 
 <details>
-<summary markdown="span">**Traffic**</summary>
+<summary markdown="span">
+
+####Traffic 
+</summary>
 
 URL Mapping
 
@@ -203,7 +222,10 @@ URL Mapping
 </details>  
 
 <details>
-<summary markdown="span">**Public Transit API v8**</summary>
+<summary markdown="span">
+
+####Public Transit API v8
+</summary>
 
 URL Mapping
 
@@ -218,7 +240,10 @@ URL Mapping
 </details>
 
 <details>
-<summary markdown="span">**Weather**</summary>
+<summary markdown="span"> 
+
+####Weather 
+</summary>
 
 URL Mapping
 
